@@ -25,7 +25,7 @@ ShareME is built on the principle of **Direct Sovereignty**. Unlike traditional 
 ### 🏗️ Architecture
 1. **Local Backend**: A high-performance **FastAPI** server running on your machine indexes the files you choose to share.
 2. **The Bridge**: Using **Cloudflare Tunnels (Argo)**, we create a secure tunnel from your local port `8000` to an encrypted `trycloudflare.com` URL.
-3. **No Config**: This technique bypasses **CGNAT**, firewalls, and router settings. You don't need to touch your router.
+3. **No Config**: This technique bypasses **CGNAT**, firewalls, and router settings. You don't need to touch your router or deal with port forwarding.
 4. **Security**: The data is encrypted in transit between the uploader and the downloader via Cloudflare's global edge network.
 
 ---
@@ -37,16 +37,16 @@ ShareME is built on the principle of **Direct Sovereignty**. Unlike traditional 
 
 ---
 
-## 📥 Get Started (GUI Installation)
+## 📥 Downloads (v1.2.0 Official Multi-Platform)
 
-For a professional experience, we now offer a **Windowed Installer** that lets you choose your installation location and creates desktop shortcuts.
+We offer professional installers and portable binaries for all major Operating Systems.
 
-| Platform | Download | Type |
+| Platform | Download | format |
 | :--- | :--- | :--- |
-| **Windows** | [**Download Installer**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.1.0/ShareMe_Setup.exe) | Professional Setup |
-| **Windows** | [**Download Portable**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.1.0/ShareME_Windows_Portable.zip) | Run Anywhere |
-| **macOS** | [**Download DMG**](https://github.com/kunalsinghks/ShareMe/releases) | Pending Build |
-| **Linux** | [**Download Binary**](https://github.com/kunalsinghks/ShareMe/releases) | Native Linux |
+| **Windows** | [**Download Installer (Setup)**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.2.0/ShareMe_Windows_Installer_Package.zip) | `.zip` (contains .exe) |
+| **Windows** | [**Download Portable**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.2.0/ShareME_Windows_Portable.zip) | `.zip` |
+| **macOS** | [**Download for Mac (Intel/M1/M2)**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.2.0/ShareME_Mac_Portable.zip) | `.zip` |
+| **Linux** | [**Download for Linux**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.2.0/ShareME_Linux_Portable.tar.gz) | `.tar.gz` |
 
 ---
 
@@ -71,13 +71,13 @@ pip install -r requirements.txt
 python gui.py
 ```
 
-### Packaging (Build your own .exe/app)
+### Packaging (Build your own labels)
 ```bash
 # Build the core app
 pyinstaller ShareME.spec
 
-# Build the GUI Installer
-python -m PyInstaller --onefile --windowed --icon=favicon.ico gui_installer.py
+# Build the GUI Installer (Windows)
+python -m PyInstaller --onefile --windowed --icon=favicon.ico --name ShareMe_Setup gui_installer.py
 ```
 
 ---
