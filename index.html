@@ -40,7 +40,7 @@
         }
 
         .hero {
-            padding: 6rem 0;
+            padding: 4rem 0;
         }
 
         h1 {
@@ -56,110 +56,105 @@
         .subtitle {
             font-size: 1.5rem;
             color: #64748b;
-            margin: 1.5rem 0 3.5rem;
+            margin: 1rem 0 3rem;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
             line-height: 1.6;
         }
 
-        .cta-group {
+        .download-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .platform-card {
+            background: var(--glass);
+            padding: 2.5rem;
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .platform-card:hover {
+            transform: translateY(-5px);
+            background: white;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+        }
+
+        .platform-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
             display: flex;
-            gap: 1.5rem;
-            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .btn {
-            padding: 1.2rem 3rem;
-            border-radius: 1.2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
             text-decoration: none;
             font-weight: 700;
-            font-size: 1.1rem;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: inline-flex;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn-primary {
-            background-color: var(--primary);
+            background: var(--primary);
             color: white;
-            box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.4);
         }
 
         .btn-secondary {
-            background-color: white;
+            background: #EEF2FF;
+            color: var(--primary);
+        }
+
+        .btn-outline {
+            border: 1.5px solid #e2e8f0;
             color: var(--text);
-            border: 1px solid #e2e8f0;
         }
 
         .btn:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 25px 40px -10px rgba(0, 0, 0, 0.15);
+            opacity: 0.9;
+            transform: scale(1.02);
         }
 
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2.5rem;
-            margin-top: 8rem;
+            gap: 2rem;
+            margin-top: 6rem;
             text-align: left;
         }
 
         .feature-card {
             background: var(--glass);
-            backdrop-filter: blur(10px);
-            padding: 2.5rem;
-            border-radius: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover {
-            border-color: var(--primary-light);
-            background: white;
-        }
-
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            display: block;
-        }
-
-        h3 {
-            margin: 0 0 1rem;
-            font-size: 1.4rem;
-        }
-
-        .feature-card p {
-            color: #64748b;
-            margin: 0;
-            line-height: 1.5;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
         }
 
         footer {
-            margin-top: 10rem;
-            padding: 4rem 2rem;
-            border-top: 1px solid #e2e8f0;
-            font-size: 1rem;
+            margin-top: 6rem;
+            padding: 2rem;
             color: #94a3b8;
         }
 
         .heart {
             color: #f43f5e;
-            display: inline-block;
-            animation: beat 1s infinite alternate;
-        }
-
-        @keyframes beat {
-            from {
-                transform: scale(1);
-            }
-
-            to {
-                transform: scale(1.1);
-            }
         }
     </style>
 </head>
@@ -168,31 +163,53 @@
     <div class="container">
         <section class="hero">
             <h1>ShareME.</h1>
-            <p class="subtitle">Premium, encrypted P2P file sharing directly from your computer to the world. No size
-                limits. No 3rd party servers.</p>
-            <div class="cta-group">
-                <a href="https://github.com/kunalsinghks/ShareMe/releases" class="btn btn-primary">Download for
-                    Windows</a>
-                <a href="https://github.com/kunalsinghks/ShareMe" class="btn btn-secondary">GitHub Repo</a>
-            </div>
+            <p class="subtitle">Secure, encrypted P2P file sharing directly from your computer. No cloud limits. No 3rd
+                party servers.</p>
         </section>
+
+        <div class="download-box">
+            <!-- Windows -->
+            <div class="platform-card">
+                <div class="platform-title">🪟 Windows</div>
+                <div class="btn-stack">
+                    <a href="https://github.com/kunalsinghks/ShareMe/releases/download/v1.1.0/ShareMe_Setup.exe"
+                        class="btn btn-primary">Download Installer (.exe)</a>
+                    <a href="https://github.com/kunalsinghks/ShareMe/releases/download/v1.1.0/ShareME_Windows_Portable.zip"
+                        class="btn btn-secondary">Portable Version (.zip)</a>
+                </div>
+            </div>
+
+            <!-- macOS -->
+            <div class="platform-card">
+                <div class="platform-title">🍎 macOS</div>
+                <div class="btn-stack">
+                    <a href="https://github.com/kunalsinghks/ShareMe/releases" class="btn btn-outline">Download for
+                        macOS (.dmg)</a>
+                </div>
+            </div>
+
+            <!-- Linux -->
+            <div class="platform-card">
+                <div class="platform-title">🐧 Linux</div>
+                <div class="btn-stack">
+                    <a href="https://github.com/kunalsinghks/ShareMe/releases" class="btn btn-outline">Download for
+                        Linux (.tar.gz)</a>
+                </div>
+            </div>
+        </div>
 
         <div class="features">
             <div class="feature-card">
-                <span class="feature-icon">🛡️</span>
-                <h3>True P2P Privacy</h3>
-                <p>Transfer files directly from your disk. Data never touches any cloud storage, ensuring absolute
-                    privacy.</p>
+                <h3>🛡️ Absolute Privacy</h3>
+                <p>Data moves from disk to disk. No cloud storage intermediaries.</p>
             </div>
             <div class="feature-card">
-                <span class="feature-icon">⚡</span>
-                <h3>Unlimited Speed</h3>
-                <p>Sharing speed is limited only by your internet bandwidth. No artificially capped download speeds.</p>
+                <h3>⚡ Direct Speed</h3>
+                <p>No artificial bandwidth caps. Transfer as fast as your fiber allows.</p>
             </div>
             <div class="feature-card">
-                <span class="feature-icon">🔒</span>
-                <h3>Vault Security</h3>
-                <p>Protect your shared links with optional AES-grade password security for complete control.</p>
+                <h3>🔒 Secure Vault</h3>
+                <p>Password protect your shared files with ease.</p>
             </div>
         </div>
 
