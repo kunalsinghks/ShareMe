@@ -1,0 +1,11 @@
+customtkinter
+fastapi
+uvicorn
+jinja2
+python-multipart
+pyyaml
+qrcode[pil]
+pystray
+pillow
+requests
+pyinstaller

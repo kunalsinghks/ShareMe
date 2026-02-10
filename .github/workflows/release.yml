@@ -1,0 +1,79 @@
+name: Multi-Platform Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller qrcode[pil] pystray pillow requests uvicorn fastapi jinja2 python-multipart pyyaml pywin32; echo "Done"
+
+      - name: Build with PyInstaller
+        run: |
+          pyinstaller ShareME.spec
+
+      - name: Package Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd dist
+          Compress-Archive -Path ShareME/* -DestinationPath ShareME_Windows_Portable.zip
+          # The windows_installer.py can be converted to an exe too if needed
+          pyinstaller --onefile --icon=../favicon.ico ../windows_installer.py
+          mv dist/windows_installer.exe dist/ShareMe_Setup.exe
+          Compress-Archive -Path dist/ShareMe_Setup.exe -DestinationPath ShareME_Windows_Installer.zip
+
+      - name: Package Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd dist
+          tar -czvf ShareME_Linux_Portable.tar.gz ShareME/
+
+      - name: Package Mac
+        if: matrix.os == 'macos-latest'
+        run: |
+          cd dist
+          zip -r ShareME_Mac_Portable.zip ShareME/
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ShareME-Binaries
+          path: dist/*.zip
+          if-no-files-found: warn
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: ShareME-Binaries
+          path: release-assets
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release-assets/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
