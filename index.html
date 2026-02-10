@@ -4,45 +4,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="ShareMe - Premium P2P File Sharing. Share large files directly from your PC with no cloud limits and full encryption.">
+    <meta name="keywords"
+        content="P2P File Sharing, Direct File Transfer, Send Large Files, ShareMe, Secure File Transfer, Cloudflare Tunnel Sharing">
+    <meta name="author" content="Kunal">
+    <meta property="og:title" content="ShareME. | Direct P2P File Sharing">
+    <meta property="og:description" content="The fastest way to share files directly from your PC to the world.">
     <title>ShareME | Premium P2P File Sharing</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #6366f1;
+            --primary-light: #818cf8;
             --bg: #f8fafc;
             --text: #0f172a;
+            --glass: rgba(255, 255, 255, 0.7);
         }
 
         body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--bg);
+            background-image: radial-gradient(circle at top right, #eef2ff, transparent), radial-gradient(circle at bottom left, #f5f3ff, transparent);
             color: var(--text);
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            text-align: center;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 800px;
-            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero {
+            padding: 6rem 0;
         }
 
         h1 {
-            font-size: 4rem;
-            margin-bottom: 0;
+            font-size: 5rem;
+            margin: 0;
+            font-weight: 800;
             background: linear-gradient(135deg, #6366f1, #a855f7);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
         }
 
-        p {
-            font-size: 1.25rem;
+        .subtitle {
+            font-size: 1.5rem;
             color: #64748b;
-            margin: 1.5rem 0 3rem;
+            margin: 1.5rem 0 3.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
         }
 
         .cta-group {
@@ -52,17 +70,21 @@
         }
 
         .btn {
-            padding: 1rem 2.5rem;
-            border-radius: 1rem;
+            padding: 1.2rem 3rem;
+            border-radius: 1.2rem;
             text-decoration: none;
             font-weight: 700;
-            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-primary {
             background-color: var(--primary);
             color: white;
-            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 15px 30px -5px rgba(99, 102, 241, 0.4);
         }
 
         .btn-secondary {
@@ -72,21 +94,111 @@
         }
 
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 25px 40px -10px rgba(0, 0, 0, 0.15);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            margin-top: 8rem;
+            text-align: left;
+        }
+
+        .feature-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary-light);
+            background: white;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        h3 {
+            margin: 0 0 1rem;
+            font-size: 1.4rem;
+        }
+
+        .feature-card p {
+            color: #64748b;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        footer {
+            margin-top: 10rem;
+            padding: 4rem 2rem;
+            border-top: 1px solid #e2e8f0;
+            font-size: 1rem;
+            color: #94a3b8;
+        }
+
+        .heart {
+            color: #f43f5e;
+            display: inline-block;
+            animation: beat 1s infinite alternate;
+        }
+
+        @keyframes beat {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.1);
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>ShareME.</h1>
-        <p>Premium, secure, and ultra-fast peer-to-peer file sharing directly from your PC. No cloud, no limits, just
-            direct transfer.</p>
-        <div class="cta-group">
-            <a href="https://github.com/kunalsinghks/ShareMe/releases" class="btn btn-primary">Download for Windows</a>
-            <a href="https://github.com/kunalsinghks/ShareMe" class="btn btn-secondary">View on GitHub</a>
+        <section class="hero">
+            <h1>ShareME.</h1>
+            <p class="subtitle">Premium, encrypted P2P file sharing directly from your computer to the world. No size
+                limits. No 3rd party servers.</p>
+            <div class="cta-group">
+                <a href="https://github.com/kunalsinghks/ShareMe/releases" class="btn btn-primary">Download for
+                    Windows</a>
+                <a href="https://github.com/kunalsinghks/ShareMe" class="btn btn-secondary">GitHub Repo</a>
+            </div>
+        </section>
+
+        <div class="features">
+            <div class="feature-card">
+                <span class="feature-icon">🛡️</span>
+                <h3>True P2P Privacy</h3>
+                <p>Transfer files directly from your disk. Data never touches any cloud storage, ensuring absolute
+                    privacy.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">⚡</span>
+                <h3>Unlimited Speed</h3>
+                <p>Sharing speed is limited only by your internet bandwidth. No artificially capped download speeds.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🔒</span>
+                <h3>Vault Security</h3>
+                <p>Protect your shared links with optional AES-grade password security for complete control.</p>
+            </div>
         </div>
+
+        <footer>
+            Made with <span class="heart">❤️</span> by Kunal
+        </footer>
     </div>
 </body>
 
