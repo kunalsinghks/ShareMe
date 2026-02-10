@@ -1,4 +1,4 @@
-name: Multi-Platform Release
+name: Build and Release ShareME
 
 on:
   push:
@@ -36,29 +36,35 @@ jobs:
         run: |
           cd dist
           Compress-Archive -Path ShareME/* -DestinationPath ShareME_Windows_Portable.zip
-          # The windows_installer.py can be converted to an exe too if needed
-          pyinstaller --onefile --icon=../favicon.ico ../windows_installer.py
-          mv dist/windows_installer.exe dist/ShareMe_Setup.exe
-          Compress-Archive -Path dist/ShareMe_Setup.exe -DestinationPath ShareME_Windows_Installer.zip
+          pyinstaller --onefile --windowed --icon=../favicon.ico --name ShareMe_Setup ../gui_installer.py
+          mv dist/ShareMe_Setup.exe dist/ShareMe_Setup.exe
+          Compress-Archive -Path dist/ShareMe_Setup.exe -DestinationPath ShareMe_Windows_Installer_Package.zip
 
       - name: Package Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
           cd dist
-          tar -czvf ShareME_Linux_Portable.tar.gz ShareME/
+          tar -czvf ../ShareME_Linux_Portable.tar.gz ShareME/
 
       - name: Package Mac
         if: matrix.os == 'macos-latest'
         run: |
           cd dist
-          zip -r ShareME_Mac_Portable.zip ShareME/
+          zip -r ../ShareME_Mac_Portable.zip ShareME/
+
+      - name: Move Windows Zips
+        if: matrix.os == 'windows-latest'
+        run: |
+          mv dist/ShareME_Windows_Portable.zip .
+          mv dist/ShareMe_Windows_Installer_Package.zip .
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: ShareME-Binaries
-          path: dist/*.zip
-          if-no-files-found: warn
+          name: ShareME-Binaries-${{ matrix.os }}
+          path: |
+            *.zip
+            *.tar.gz
 
   release:
     needs: build
@@ -68,12 +74,14 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
         with:
-          name: ShareME-Binaries
           path: release-assets
       
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: release-assets/*
+          files: |
+            release-assets/ShareME-Binaries-windows-latest/*.zip
+            release-assets/ShareME-Binaries-ubuntu-latest/*.tar.gz
+            release-assets/ShareME-Binaries-macos-latest/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
