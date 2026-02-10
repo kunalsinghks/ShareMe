@@ -1,49 +1,61 @@
-# ShareME. 🚀
+# ShareME. 🚀 
+### Premium Encrypted P2P File Server
 
-[![GitHub stars](https://img.shields.io/github/stars/kunalsinghks/ShareMe?style=for-the-badge&color=6366f1)](https://github.com/kunalsinghks/ShareMe/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/kunalsinghks/ShareMe?style=for-the-badge&color=818cf8)](https://github.com/kunalsinghks/ShareMe/issues)
-[![License](https://img.shields.io/github/license/kunalsinghks/ShareMe?style=for-the-badge&color=4f46e5)](https://github.com/kunalsinghks/ShareMe/blob/main/LICENSE)
+<div align="center">
+  <img src="favicon.ico" width="128" height="128" />
+  <p align="center">
+    <strong>The fastest, most secure way to share files directly from your disk to the world.</strong>
+    <br />
+    <em>Data moves disk-to-disk. No cloud storage. No size limits. Total Privacy.</em>
+  </p>
 
-**ShareME** is a premium, secure, and ultra-fast peer-to-peer file sharing server that runs directly from your PC. No cloud intermediaries, no size limits, and 100% encrypted direct transfers.
-
----
-
-## ✨ Features
-
-- **🛡️ Direct P2P Privacy**: Share files directly from your computer using Cloudflare Tunnels (TryCloudflare).
-- **📱 Instant QR Sharing**: Generate mobile-friendly QR codes for lightning-fast sharing.
-- **💎 Luxury Neumorphic UI**: A gorgeous, modern dashboard designed for ease of use.
-- **🔒 Vault Security**: Optional password protection to keep your data private.
-- **📥 Background Engine**: Minimizes to the system tray so your links stay active 24/7.
-- **⚡ Zero Setup**: No port forwarding required. Works behind CGNAT and firewalls.
-
-## 📥 Installation
-
-### 🪟 Windows
-Download the **[ShareME_Portable.zip](https://github.com/kunalsinghks/ShareMe/releases)**. Unzip and run `ShareME.exe`.
-
-### 🍎 macOS & 🐧 Linux
-1. Clone the repo: `git clone https://github.com/kunalsinghks/ShareMe.git`
-2. Install dependencies: `pip install -r requirements.txt`
-3. Run: `python gui.py`
+  <p align="center">
+    <a href="https://github.com/kunalsinghks/ShareMe/stargazers"><img src="https://img.shields.io/github/stars/kunalsinghks/ShareMe?style=for-the-badge&color=6366f1&logo=github" alt="Stars" /></a>
+    <a href="https://github.com/kunalsinghks/ShareMe/releases"><img src="https://img.shields.io/github/downloads/kunalsinghks/ShareMe/total?style=for-the-badge&color=818cf8&logo=windows" alt="Downloads" /></a>
+    <a href="https://github.com/kunalsinghks/ShareMe/blob/main/LICENSE"><img src="https://img.shields.io/github/license/kunalsinghks/ShareMe?style=for-the-badge&color=4f46e5" alt="License" /></a>
+  </p>
+</div>
 
 ---
 
-## 🛠️ Quick Start
+## 💎 The ShareME Experience
 
-1. **Launch ShareME**: Open the application on your computer.
-2. **Add Files**: Drag and drop or click **+ Add Files** to populate your workspace.
-3. **Go Live**: Click **START SHARING** to generate your unique link.
-4. **Share**: Copy the link or show the **QR Code** to your friends!
+ShareME isn't just a file server; it's a **private tunnel** between you and your friends. By leveraging **Cloudflare Tunnels**, ShareME bypasses complex router settings, firewalls, and CGNAT to give you a public, encrypted URL for your local files instantly.
+
+### ✨ Key Features
+
+- **🛡️ Direct P2P Encryption**: Your data never touches a 3rd party server. It moves directly from your computer to the receiver via an encrypted tunnel.
+- **📱 One-Scan Mobile Sharing**: Built-in QR Code generator lets you share 4K movies or massive folders to mobile devices in seconds.
+- **� Secure Vault Mode**: Add a global access password to your workspace with one click.
+- **� Luxury Dashboard**: A modern, light/dark mode neumorphic UI designed for simplicity and elegance.
+- **📥 Tray-Active Engine**: Minimize to the system tray to keep your links alive while you work.
+- **⚡ Unlimited Power**: No 2GB caps. Share 100GB+ files as easily as a text file.
 
 ---
 
-## 🤝 Contributing
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+## 📥 Get Started
+
+| Platform | Download | Format |
+| :--- | :--- | :--- |
+| **Windows** | [**Download Installer**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.1.0/ShareMe_Setup.exe) | `.exe` |
+| **Windows** | [**Download Portable**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.1.0/ShareME_Windows_Portable.zip) | `.zip` |
+| **macOS** | [**Download DMG**](https://github.com/kunalsinghks/ShareMe/releases) | `.dmg` (Build Pending) |
+| **Linux** | [**Download Binary**](https://github.com/kunalsinghks/ShareMe/releases) | `.tar.gz` (Build Pending) |
 
 ---
 
-## 📜 License
-Distributed under the MIT License. See `LICENSE` for more information.
+## � Quick Usage Guide
 
-Made with ❤️ by Kunal
+1. **Launch**: Open ShareME on your desktop.
+2. **Populate**: Drag files or folders into the "Filespace."
+3. **Go Live**: Click **START SHARING**.
+4. **Broadcast**: Copy the link or show the **QR Code** to your recipient. 
+
+*Note: For macOS/Linux building, simply run `pip install -r requirements.txt` and `pyinstaller ShareME.spec` in the project root.*
+
+---
+
+<div align="center">
+  <h3>Made with ❤️ by Kunal</h3>
+  <p><i>Empowering privacy through direct technology.</i></p>
+</div>
