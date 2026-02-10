@@ -5,11 +5,12 @@ import shutil
 import threading
 import sys
 import ctypes
+import pythoncom
 from win32com.client import Dispatch
 
 # Settings
 APP_NAME = "ShareMe"
-VERSION = "1.2.7"
+VERSION = "1.3.2"
 ICON_NAME = "favicon.ico"
 FONT_MAIN = ("Segoe UI", 10)
 FONT_BOLD = ("Segoe UI", 11, "bold")
@@ -88,6 +89,7 @@ class ShareMeInstaller:
 
     def run_install(self):
         try:
+            pythoncom.CoInitialize()
             target_dir = self.install_path.get()
             if not os.path.exists(target_dir):
                 os.makedirs(target_dir)

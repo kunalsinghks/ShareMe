@@ -43,7 +43,7 @@ class ShareMEApp(ctk.CTk):
         super().__init__()
 
         # Window Setup
-        self.title("ShareME v1.3.1 | Cloudflare P2P")
+        self.title("ShareME v1.3.2 | Cloudflare P2P")
         self.geometry("1000x800")
         
         # Appearance - LIGHT MODE DEFAULT
