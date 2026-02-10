@@ -44,7 +44,7 @@ class ShareMEApp(ctk.CTk):
 
         # Window Setup
         # Window Setup
-        self.title("ShareME v1.3.8 | Cloudflare P2P")
+        self.title("ShareME v1.3.9 | Cloudflare P2P")
         self.geometry("1000x800")
         
         # Appearance - LIGHT MODE DEFAULT
