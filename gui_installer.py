@@ -9,26 +9,28 @@ from win32com.client import Dispatch
 
 # Settings
 APP_NAME = "ShareMe"
-VERSION = "1.2.6"
+VERSION = "1.2.7"
 ICON_NAME = "favicon.ico"
 FONT_MAIN = ("Segoe UI", 10)
 FONT_BOLD = ("Segoe UI", 11, "bold")
-FONT_HEADER = ("Segoe UI", 20, "bold")
+FONT_HEADER = ("Segoe UI", 22, "bold")
 
 class ShareMeInstaller:
     def __init__(self, root):
         self.root = root
         self.root.title(f"{APP_NAME} v{VERSION} Setup")
-        self.root.geometry("620x480")
+        self.root.geometry("640x500")
         self.root.configure(bg="#ffffff")
         self.root.resizable(False, False)
         
         # Style
         self.style = ttk.Style()
         self.style.theme_use('clam')
-        self.style.configure("TButton", font=FONT_MAIN, padding=10)
+        self.style.configure("TButton", font=FONT_MAIN, padding=10, borderwidth=0)
+        self.style.map("TButton", background=[('active', '#818cf8'), ('!disabled', '#6366f1')], foreground=[('!disabled', 'white')])
         self.style.configure("TLabel", font=FONT_MAIN, background="#ffffff")
         self.style.configure("Header.TLabel", font=FONT_HEADER, background="#6366f1", foreground="white")
+        self.style.configure("Horizontal.TProgressbar", thickness=20, borderwidth=0, troughcolor="#f3f4f6", background="#6366f1")
 
         # State
         self.install_path = tk.StringVar(value=os.path.join(os.environ['LOCALAPPDATA'], APP_NAME))

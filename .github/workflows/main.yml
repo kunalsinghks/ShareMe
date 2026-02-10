@@ -35,33 +35,44 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: pip install pywin32
       
-      - name: Build with PyInstaller
+      - name: Build Core App
         run: |
           pyinstaller ShareME.spec
-
-      - name: Pack Windows
+      
+      - name: Build Windows Installer
         if: matrix.os == 'windows-latest'
         run: |
-          Compress-Archive -Path dist/ShareME/* -DestinationPath ShareME_Windows.zip
-        shell: pwsh
+          # Copy source for bundling
+          mkdir bundle
+          cp -r dist/ShareME bundle/
+          pyinstaller --onefile --windowed --icon=favicon.ico --name ShareMe_Setup --add-data "dist/ShareME;ShareME" gui_installer.py
+        shell: bash
+
+      - name: Pack Windows Portable
+        if: matrix.os == 'windows-latest'
+        run: |
+          powershell "Compress-Archive -Path dist/ShareME/* -DestinationPath ShareMe_Windows_Portable.zip"
+          mv dist/ShareMe_Setup.exe ShareMe_Windows_Installer.exe
+        shell: bash
 
       - name: Pack Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
-          tar -czvf ShareME_Linux.tar.gz -C dist/ShareME .
+          tar -czvf ShareMe_Linux_Portable.tar.gz -C dist/ShareME .
 
       - name: Pack Mac
         if: matrix.os == 'macos-latest'
         run: |
-          zip -r ShareME_Mac.zip dist/ShareME
+          zip -r ShareMe_Mac_Portable.zip dist/ShareME
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: Binaries-${{ matrix.os }}
           path: |
-            *.zip
-            *.tar.gz
+            ShareMe_*.zip
+            ShareMe_*.tar.gz
+            ShareMe_*.exe
 
   release:
     needs: build
@@ -75,9 +86,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            Binaries-windows-latest/*.zip
-            Binaries-ubuntu-latest/*.tar.gz
-            Binaries-macos-latest/*.zip
+            **/*.zip
+            **/*.tar.gz
+            **/*.exe
           draft: false
           prerelease: false
         env:
