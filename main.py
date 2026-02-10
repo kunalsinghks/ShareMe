@@ -10,12 +10,26 @@ import uvicorn
 import config
 import tunnel
 
+import sys
+
+# Path resolution for PyInstaller
+def get_base_path():
+    if getattr(sys, 'frozen', False):
+        return sys._MEIPASS
+    return os.path.abspath(".")
+
+BASE_PATH = get_base_path()
+
 app = FastAPI(title="ShareME Server")
 
 # Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+static_path = os.path.join(BASE_PATH, "static")
+if not os.path.exists(static_path):
+    os.makedirs(static_path)
+app.mount("/static", StaticFiles(directory=static_path), name="static")
 
-templates = Jinja2Templates(directory="templates")
+template_path = os.path.join(BASE_PATH, "templates")
+templates = Jinja2Templates(directory=template_path)
 
 # Configure shared base directory
 # For simplicity, we just share everything inside the 'shared' folder created in config.py
