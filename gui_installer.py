@@ -146,18 +146,30 @@ class ShareMeInstaller:
 
     def register_uninstall(self, install_dir, exe_path):
         try:
-            # Create a simple uninstall batch file
+            # Create a robust uninstall batch file
             uninstaller_path = os.path.join(install_dir, "uninstall.bat")
+            temp_uninstaller = os.path.join(os.environ['TEMP'], "shareme_uninstall.bat")
+            
             with open(uninstaller_path, "w") as f:
                 f.write(f'@echo off\n')
-                f.write(f'echo Uninstalling {APP_NAME}...\n')
-                f.write(f'timeout /t 2 /nobreak > nul\n')
-                f.write(f'taskkill /F /IM ShareME.exe /T 2>nul\n')
-                f.write(f'rd /s /q "{install_dir}"\n')
-                f.write(f'reg delete "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{APP_NAME}" /f\n')
-                f.write(f'del "%userprofile%\\Desktop\\{APP_NAME}.lnk" /q\n')
-                f.write(f'echo {APP_NAME} has been removed.\n')
-                f.write(f'pause\n')
+                f.write(f'title ShareME Uninstaller\n')
+                f.write(f'echo Preparing uninstallation...\n')
+                f.write(f'copy /y "{uninstaller_path}" "{temp_uninstaller}" > nul\n')
+                f.write(f'start /b "" "{temp_uninstaller}" delayed\n')
+                f.write(f'exit\n')
+
+            with open(temp_uninstaller, "w") as f:
+                f.write(f'@echo off\n')
+                f.write(f'if "%1"=="delayed" (\n')
+                f.write(f'  timeout /t 2 /nobreak > nul\n')
+                f.write(f'  taskkill /F /IM ShareME.exe /T 2>nul\n')
+                f.write(f'  rd /s /q "{install_dir}" 2>nul\n')
+                f.write(f'  reg delete "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{APP_NAME}" /f 2>nul\n')
+                f.write(f'  del "%userprofile%\\Desktop\\{APP_NAME}.lnk" /f /q 2>nul\n')
+                f.write(f'  echo {APP_NAME} has been uninstalled.\n')
+                f.write(f'  pause\n')
+                f.write(f'  del "%~f0" & exit\n')
+                f.write(f')\n')
 
             # Write to Windows Registry for "Apps & Features"
             key_path = f"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{APP_NAME}"

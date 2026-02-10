@@ -43,7 +43,7 @@ class ShareMEApp(ctk.CTk):
         super().__init__()
 
         # Window Setup
-        self.title("ShareME v1.3.4 | Cloudflare P2P")
+        self.title("ShareME v1.3.5 | Cloudflare P2P")
         self.geometry("1000x800")
         
         # Appearance - LIGHT MODE DEFAULT
@@ -280,7 +280,7 @@ class ShareMEApp(ctk.CTk):
         self.start_btn.configure(text="STOP SHARING", fg_color="#ef4444", hover_color="#dc2626")
         self.status_badge.configure(text="● STARTING...", text_color=BTN_PURPLE)
         threading.Thread(target=lambda: uvicorn.run(main.app, host="127.0.0.1", port=8000, log_level="error"), daemon=True).start()
-        time.sleep(3)
+        
         def tunnel_watch():
             curr_url = tunnel.start_cloudflared(self.server_port)
             if curr_url and self.is_running: 
@@ -315,7 +315,9 @@ class ShareMEApp(ctk.CTk):
         self.qr_card.grid_forget()
         tunnel.stop_tunnel()
         try:
-            os.system("taskkill /F /IM python.exe /FI \"WINDOWTITLE ne ShareME*\" /T")
+            import subprocess
+            subprocess.run(["taskkill", "/F", "/IM", "python.exe", "/FI", "WINDOWTITLE ne ShareME*", "/T"], 
+                           creationflags=0x08000000, capture_output=True)
         except: pass
 
     def update_url_box(self, url):
