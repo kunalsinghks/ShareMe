@@ -1,12 +1,12 @@
 # ShareME. 🚀 
-### Premium Encrypted P2P File Server
+### Premium Encrypted P2P File Server — Built by Kunal
 
 <div align="center">
   <img src="favicon.ico" width="128" height="128" />
   <p align="center">
     <strong>The fastest, most secure way to share files directly from your disk to the world.</strong>
     <br />
-    <em>Data moves disk-to-disk. No cloud storage. No size limits. Total Privacy.</em>
+    <em>100% Open Source. No cloud storage. No size limits. Total Privacy.</em>
   </p>
 
   <p align="center">
@@ -18,44 +18,71 @@
 
 ---
 
-## 💎 The ShareME Experience
+## 📖 Deep Dive: How ShareME Works
 
-ShareME isn't just a file server; it's a **private tunnel** between you and your friends. By leveraging **Cloudflare Tunnels**, ShareME bypasses complex router settings, firewalls, and CGNAT to give you a public, encrypted URL for your local files instantly.
+ShareME is built on the principle of **Direct Sovereignty**. Unlike traditional file-sharing services (GoFile, WeTransfer) that store your files on their servers, ShareME creates a temporary, encrypted "bridge" directly to your local computer.
 
-### ✨ Key Features
-
-- **🛡️ Direct P2P Encryption**: Your data never touches a 3rd party server. It moves directly from your computer to the receiver via an encrypted tunnel.
-- **📱 One-Scan Mobile Sharing**: Built-in QR Code generator lets you share 4K movies or massive folders to mobile devices in seconds.
-- **� Secure Vault Mode**: Add a global access password to your workspace with one click.
-- **� Luxury Dashboard**: A modern, light/dark mode neumorphic UI designed for simplicity and elegance.
-- **📥 Tray-Active Engine**: Minimize to the system tray to keep your links alive while you work.
-- **⚡ Unlimited Power**: No 2GB caps. Share 100GB+ files as easily as a text file.
+### 🏗️ Architecture
+1. **Local Backend**: A high-performance **FastAPI** server running on your machine indexes the files you choose to share.
+2. **The Bridge**: Using **Cloudflare Tunnels (Argo)**, we create a secure tunnel from your local port `8000` to an encrypted `trycloudflare.com` URL.
+3. **No Config**: This technique bypasses **CGNAT**, firewalls, and router settings. You don't need to touch your router.
+4. **Security**: The data is encrypted in transit between the uploader and the downloader via Cloudflare's global edge network.
 
 ---
 
-## 📥 Get Started
+## 🛡️ Security & Privacy
+- **E2EE (End-to-End Encryption)**: Data is encrypted via HTTPS using Cloudflare's Tier-1 security infrastructure.
+- **Zero Retention**: Files stay on your disk. They are never cached or stored in any cloud bucket.
+- **Vault Protection**: Enable an optional access password. The server uses local authentication to ensure only people with the key can see your files.
 
-| Platform | Download | Format |
+---
+
+## 📥 Get Started (GUI Installation)
+
+For a professional experience, we now offer a **Windowed Installer** that lets you choose your installation location and creates desktop shortcuts.
+
+| Platform | Download | Type |
 | :--- | :--- | :--- |
-| **Windows** | [**Download Installer**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.1.0/ShareMe_Setup.exe) | `.exe` |
-| **Windows** | [**Download Portable**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.1.0/ShareME_Windows_Portable.zip) | `.zip` |
-| **macOS** | [**Download DMG**](https://github.com/kunalsinghks/ShareMe/releases) | `.dmg` (Build Pending) |
-| **Linux** | [**Download Binary**](https://github.com/kunalsinghks/ShareMe/releases) | `.tar.gz` (Build Pending) |
+| **Windows** | [**Download Installer**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.1.0/ShareMe_Setup.exe) | Professional Setup |
+| **Windows** | [**Download Portable**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.1.0/ShareME_Windows_Portable.zip) | Run Anywhere |
+| **macOS** | [**Download DMG**](https://github.com/kunalsinghks/ShareMe/releases) | Pending Build |
+| **Linux** | [**Download Binary**](https://github.com/kunalsinghks/ShareMe/releases) | Native Linux |
 
 ---
 
-## � Quick Usage Guide
+## 🛠️ Open Source Development
 
-1. **Launch**: Open ShareME on your desktop.
-2. **Populate**: Drag files or folders into the "Filespace."
-3. **Go Live**: Click **START SHARING**.
-4. **Broadcast**: Copy the link or show the **QR Code** to your recipient. 
+We welcome the community to audit, improve, and fork ShareME.
 
-*Note: For macOS/Linux building, simply run `pip install -r requirements.txt` and `pyinstaller ShareME.spec` in the project root.*
+### Prerequisites
+- Python 3.10+
+- Node.js (for `npx cloudflared`)
+
+### Local Setup
+```bash
+# 1. Clone the repository
+git clone https://github.com/kunalsinghks/ShareMe.git
+cd ShareMe
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Launch the dashboard
+python gui.py
+```
+
+### Packaging (Build your own .exe/app)
+```bash
+# Build the core app
+pyinstaller ShareME.spec
+
+# Build the GUI Installer
+python -m PyInstaller --onefile --windowed --icon=favicon.ico gui_installer.py
+```
 
 ---
 
 <div align="center">
   <h3>Made with ❤️ by Kunal</h3>
-  <p><i>Empowering privacy through direct technology.</i></p>
+  <p><i>Building a more private and decentralised web.</i></p>
 </div>

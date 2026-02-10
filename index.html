@@ -5,13 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="ShareMe - Premium P2P File Sharing. Share large files directly from your PC with no cloud limits and full encryption.">
+        content="ShareMe - Premium P2P File Sharing. Open-source direct file transfer powered by Cloudflare Tunnels. Secure, encrypted, and no size limits.">
     <meta name="keywords"
-        content="P2P File Sharing, Direct File Transfer, Send Large Files, ShareMe, Secure File Transfer, Cloudflare Tunnel Sharing">
+        content="P2P File Sharing, Direct File Transfer, Open Source, Send Large Files, ShareMe, Secure File Transfer, Cloudflare Tunnel Sharing">
     <meta name="author" content="Kunal">
-    <meta property="og:title" content="ShareME. | Direct P2P File Sharing">
-    <meta property="og:description" content="The fastest way to share files directly from your PC to the world.">
-    <title>ShareME | Premium P2P File Sharing</title>
+    <title>ShareME | Premium Open Source P2P Sharing</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -30,6 +28,7 @@
             color: var(--text);
             margin: 0;
             overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
         .container {
@@ -39,8 +38,33 @@
             text-align: center;
         }
 
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 0;
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 600;
+            margin-left: 2rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
         .hero {
-            padding: 4rem 0;
+            padding: 4rem 0 6rem;
         }
 
         h1 {
@@ -61,7 +85,6 @@
             margin-left: auto;
             margin-right: auto;
             line-height: 1.6;
-            font-weight: 400;
         }
 
         .download-box {
@@ -91,9 +114,6 @@
             font-size: 1.6rem;
             font-weight: 800;
             margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
         }
 
         .btn-stack {
@@ -126,40 +146,45 @@
             color: var(--primary);
         }
 
-        .btn-outline {
-            border: 2px solid #e2e8f0;
-            color: var(--text);
-        }
-
         .btn:hover {
             transform: scale(1.03);
             filter: brightness(1.1);
         }
 
-        .features {
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 8rem 0 3rem;
+        }
+
+        .grid-3 {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2.5rem;
-            margin-top: 8rem;
             text-align: left;
         }
 
-        .feature-card {
+        .info-card {
             background: rgba(255, 255, 255, 0.4);
             padding: 2.5rem;
             border-radius: 2rem;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            display: block;
+        .info-card h3 {
+            margin: 0 0 1rem;
+            font-size: 1.5rem;
+        }
+
+        .info-card p {
+            color: #64748b;
+            line-height: 1.6;
         }
 
         footer {
             margin-top: 8rem;
             padding: 4rem 2rem;
+            border-top: 1px solid #e2e8f0;
             color: #94a3b8;
             font-weight: 500;
         }
@@ -171,16 +196,14 @@
         }
 
         @keyframes pulse {
-            0% {
+
+            0%,
+            100% {
                 transform: scale(1);
             }
 
             50% {
                 transform: scale(1.2);
-            }
-
-            100% {
-                transform: scale(1);
             }
         }
     </style>
@@ -188,70 +211,78 @@
 
 <body>
     <div class="container">
+        <nav>
+            <div class="nav-logo">ShareME.</div>
+            <div class="nav-links">
+                <a href="#how">How it Works</a>
+                <a href="#oss">Open Source</a>
+                <a href="https://github.com/kunalsinghks/ShareMe">GitHub</a>
+            </div>
+        </nav>
+
         <section class="hero">
             <h1>ShareME.</h1>
-            <p class="subtitle">Experience high-speed, military-grade encrypted P2P sharing. Direct from your local disk
-                to anyone, anywhere.</p>
+            <p class="subtitle">Premium, open-source P2P sharing. Direct from your local disk to the world with zero
+                cloud intermediaries.</p>
+            <div class="download-box">
+                <div class="platform-card">
+                    <div class="platform-title">🪟 Windows</div>
+                    <div class="btn-stack">
+                        <a href="https://github.com/kunalsinghks/ShareMe/releases/download/v1.1.0/ShareMe_Setup.exe"
+                            class="btn btn-primary">Download Installer</a>
+                        <a href="https://github.com/kunalsinghks/ShareMe/releases/download/v1.1.0/ShareME_Windows_Portable.zip"
+                            class="btn btn-secondary">Portable ZIP</a>
+                    </div>
+                </div>
+                <div class="platform-card">
+                    <div class="platform-title">🍎 macOS</div>
+                    <div class="btn-stack">
+                        <a href="https://github.com/kunalsinghks/ShareMe/releases" class="btn btn-primary">Download for
+                            Mac</a>
+                    </div>
+                </div>
+                <div class="platform-card">
+                    <div class="platform-title">🐧 Linux</div>
+                    <div class="btn-stack">
+                        <a href="https://github.com/kunalsinghks/ShareMe/releases" class="btn btn-primary">Download for
+                            Linux</a>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <div class="download-box">
-            <!-- Windows -->
-            <div class="platform-card">
-                <div class="platform-title">🪟 Windows</div>
-                <div class="btn-stack">
-                    <a href="https://github.com/kunalsinghks/ShareMe/releases/download/v1.1.0/ShareMe_Setup.exe"
-                        class="btn btn-primary">
-                        <span>Download Setup</span>
-                    </a>
-                    <a href="https://github.com/kunalsinghks/ShareMe/releases/download/v1.1.0/ShareME_Windows_Portable.zip"
-                        class="btn btn-secondary">
-                        <span>Portable ZIP</span>
-                    </a>
-                </div>
+        <h2 id="how" class="section-title">How ShareME Works</h2>
+        <div class="grid-3">
+            <div class="info-card">
+                <h3>Direct Bridge</h3>
+                <p>ShareME creates an encrypted tunnel directly from your PC to a public URL. No cloud servers store
+                    your data.</p>
             </div>
-
-            <!-- macOS -->
-            <div class="platform-card">
-                <div class="platform-title">🍎 macOS</div>
-                <div class="btn-stack">
-                    <a href="https://github.com/kunalsinghks/ShareMe/releases" class="btn btn-outline">
-                        <span>Apple Silicon (M1/M2)</span>
-                    </a>
-                    <a href="https://github.com/kunalsinghks/ShareMe/releases" class="btn btn-outline">
-                        <span>Intel Mac</span>
-                    </a>
-                </div>
+            <div class="info-card">
+                <h3>Infinite Limits</h3>
+                <p>Transfer 10GB, 50GB, or even 1TB files. Your only limit is your local drive space and upload speed.
+                </p>
             </div>
-
-            <!-- Linux -->
-            <div class="platform-card">
-                <div class="platform-title">🐧 Linux</div>
-                <div class="btn-stack">
-                    <a href="https://github.com/kunalsinghks/ShareMe/releases" class="btn btn-outline">
-                        <span>Stable Release (.tar.gz)</span>
-                    </a>
-                </div>
+            <div class="info-card">
+                <h3>One-Scan Share</h3>
+                <p>Built-in QR engine generates codes instantly. Scan from any mobile device to start the high-speed
+                    transfer.</p>
             </div>
         </div>
 
-        <div class="features">
-            <div class="feature-card">
-                <span class="feature-icon">🛡️</span>
-                <h3>Zero Trusted 3rd Party</h3>
-                <p>Data moves via secure tunnels. No cloud storage intermediaries means your data is never stored
-                    elsewhere.</p>
+        <h2 id="oss" class="section-title">100% Open Source</h2>
+        <div class="grid-3">
+            <div class="info-card">
+                <h3>Full Transparency</h3>
+                <p>Audit the code yourself. Every line is open to the community on GitHub under the MIT License.</p>
             </div>
-            <div class="feature-card">
-                <span class="feature-icon">⚡</span>
-                <h3>Infinite Bandwidth</h3>
-                <p>Sharing speed is restricted only by your ISP. Perfect for 4K video and massive software libraries.
-                </p>
+            <div class="info-card">
+                <h3>Built for Devs</h3>
+                <p>Coded in Python with FastAPI and CustomTkinter. Easy to fork and customise for your own needs.</p>
             </div>
-            <div class="feature-card">
-                <span class="feature-icon">🔒</span>
-                <h3>End-to-End Control</h3>
-                <p>Built-in password protection and instant QR generation for seamless, secure device-to-device sharing.
-                </p>
+            <div class="info-card">
+                <h3>Global Security</h3>
+                <p>Leveraging Cloudflare's world-class E2EE tunnel infrastructure for data in transit.</p>
             </div>
         </div>
 
