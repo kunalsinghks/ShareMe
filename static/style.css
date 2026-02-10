@@ -1,0 +1,236 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+:root {
+    /* PREMIUM LIGHT SOFT UI - NOW DEFAULT */
+    --bg: #f3f5f9;
+    --text: #1a1c24;
+    --text-muted: #7d8590;
+    --primary: #5c67f2;
+    --accent: #7a83f5;
+
+    --shadow-dark: rgba(188, 196, 212, 0.7);
+    --shadow-light: #ffffff;
+    --inner-shadow: inset 4px 4px 10px var(--shadow-dark), inset -4px -4px 10px var(--shadow-light);
+    --outer-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light);
+}
+
+[data-theme="dark"] {
+    --bg: #12141c;
+    --text: #f0f2f5;
+    --text-muted: #9ba3af;
+    --primary: #818cf8;
+
+    --shadow-dark: rgba(0, 0, 0, 0.5);
+    --shadow-light: rgba(45, 50, 70, 0.4);
+    --inner-shadow: inset 4px 4px 10px var(--shadow-dark), inset -4px -4px 10px var(--shadow-light);
+    --outer-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+    transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease, transform 0.2s ease;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 5rem;
+    position: relative;
+}
+
+h1 {
+    font-size: 4rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    margin-bottom: 1rem;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+    position: absolute;
+    top: -20px;
+    right: 0;
+    width: 50px;
+    height: 50px;
+    background: var(--bg);
+    border-radius: 16px;
+    box-shadow: var(--outer-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--primary);
+}
+
+.theme-toggle:active {
+    box-shadow: var(--inner-shadow);
+}
+
+/* Panel */
+.neumorphic-panel {
+    background: var(--bg);
+    border-radius: 40px;
+    padding: 3rem;
+    box-shadow: var(--outer-shadow);
+}
+
+/* List Items */
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 2rem;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    background: var(--bg);
+    border-radius: 20px;
+    box-shadow: var(--outer-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.file-item:hover {
+    transform: translateY(-2px);
+}
+
+/* Cubic Icon Box - Fixed Squircle */
+.icon-box {
+    width: 52px;
+    height: 52px;
+    background: var(--bg);
+    border-radius: 12px;
+    /* True Cubic Curve */
+    box-shadow: var(--inner-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.file-details {
+    flex: 1;
+    margin: 0 1.2rem;
+    overflow: hidden;
+}
+
+.file-name {
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+/* Cubic Download Button - Fixed Squircle */
+.download-link {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    border-radius: 12px;
+    /* True Cubic Curve */
+    box-shadow: 0 8px 15px -3px rgba(99, 102, 241, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    flex-shrink: 0;
+}
+
+.download-link:hover {
+    transform: scale(1.15) rotate(5deg);
+    box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.4);
+}
+
+.download-link:active {
+    transform: scale(0.95);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Login */
+.login-card {
+    max-width: 400px;
+    margin: 15vh auto;
+    text-align: center;
+}
+
+.ne_field {
+    width: 100%;
+    padding: 1.5rem;
+    border: none;
+    background: var(--bg);
+    border-radius: 20px;
+    box-shadow: var(--inner-shadow);
+    color: var(--text);
+    outline: none;
+    margin: 2.5rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.ne_btn {
+    width: 100%;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    border-radius: 20px;
+    box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+    color: white;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.ne_btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 30px -10px rgba(99, 102, 241, 0.5);
+    filter: brightness(1.1);
+}
+
+.ne_btn:active {
+    transform: translateY(0);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+footer {
+    margin-top: 4rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-weight: 600;
+}

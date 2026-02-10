@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | ShareME</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .settings-card {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--on-surface);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .save-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            background: transparent;
+            color: var(--on-surface);
+            text-decoration: none;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Server Settings</h1>
+            <p class="subtitle">Manage security and server configuration</p>
+        </header>
+
+        <div class="glass-panel settings-card">
+            <form action="/settings" method="post">
+                <div class="form-group">
+                    <label>Access Password</label>
+                    <input type="text" name="access_password" class="form-input" value="{{ config.access_password }}"
+                        placeholder="Leave empty for no password">
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
+                        Requires session restart to apply to existing users.
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label>Ngrok Auth Token (Optional)</label>
+                    <input type="password" name="ngrok_auth_token" class="form-input"
+                        value="{{ config.ngrok_auth_token }}" placeholder="Your Ngrok Token">
+                </div>
+
+                <div class="form-group">
+                    <label>Shared Base Folder (Full Path)</label>
+                    <input type="text" name="shared_dir" class="form-input" value="{{ shared_dir }}" readonly
+                        style="opacity: 0.7; cursor: not-allowed;">
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
+                        Currently locked to the 'shared' subfolder for safety.
+                    </p>
+                </div>
+
+                <div class="btn-row">
+                    <a href="/" class="cancel-btn">Back to Files</a>
+                    <button type="submit" class="save-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>

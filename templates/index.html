@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShareME | Personal File Server</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="theme-toggle" id="themeBtn" title="Toggle Light/Dark Theme">
+                <i data-lucide="sun" id="themeIcon"></i>
+            </div>
+            <h1>ShareME</h1>
+            <p class="subtitle">Securely sharing files directly from your PC</p>
+            {% if public_url %}
+            <div class="server-status">
+                <i data-lucide="globe"></i>
+                <span>Public: <a href="{{ public_url }}" style="color: inherit; text-decoration: none;">{{ public_url
+                        }}</a></span>
+            </div>
+            {% else %}
+            <div class="server-status"
+                style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; border-color: rgba(59, 130, 246, 0.2);">
+                <i data-lucide="radio"></i>
+                <span>Local Server Running</span>
+            </div>
+            {% endif %}
+        </header>
+
+        <div class="neumorphic-panel">
+            <div class="breadcrumb">
+                <i data-lucide="home" size="18"></i>
+                <a href="/">Root</a>
+                {% for part in breadcrumbs %}
+                <span>/</span>
+                <a href="{{ part.url }}">{{ part.name }}</a>
+                {% endfor %}
+            </div>
+
+            <div class="file-list">
+                {% if not files and not folders %}
+                <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                    <i data-lucide="folder-open" size="48" style="margin-bottom: 1rem; opacity: 0.5;"></i>
+                    <p>This folder is empty</p>
+                </div>
+                {% endif %}
+
+                {% for folder in folders %}
+                <div class="file-item">
+                    <div class="file-info">
+                        <div class="icon-box">
+                            <i data-lucide="folder"></i>
+                        </div>
+                        <div class="file-details">
+                            <a href="/?path={{ folder.path }}" class="file-name">{{ folder.name }}</a>
+                            <p class="file-meta">Folder</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% for file in files %}
+                <div class="file-item" ondblclick="window.open('/download?path={{ file.path }}', '_blank')">
+                    <div class="file-info" style="cursor: pointer;">
+                        <div class="icon-box">
+                            <i data-lucide="file"></i>
+                        </div>
+                        <div class="file-details">
+                            <span class="file-name">{{ file.name }}</span>
+                            <p class="file-meta">{{ file.size }} • {{ file.modified }}</p>
+                        </div>
+                    </div>
+                    <a href="/download?path={{ file.path }}" class="download-link" title="Download">
+                        <i data-lucide="download" size="20"></i>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <footer style="margin-top: 3rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+            <p>&copy; 2026 ShareME File Server • Peer-to-Peer Transfer</p>
+        </footer>
+    </div>
+
+    <footer
+        style="margin-top: 4rem; text-align: center; color: var(--text-muted); font-size: 0.85rem; padding-bottom: 2rem;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <i data-lucide="shield-check" size="16" style="color: #10b981;"></i>
+            <span style="color: #10b981; font-weight: 600;">ENCRYPTED P2P TRANSFER ACTIVE</span>
+        </div>
+        <p>Private Direct Connection • No data leaves your PC via third-party servers</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        const themeBtn = document.getElementById('themeBtn');
+        const themeIcon = document.getElementById('themeIcon');
+        const body = document.body;
+
+        function toggleTheme() {
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            document.documentElement.setAttribute('data-theme', isLight ? 'dark' : 'light');
+            localStorage.setItem('theme', isLight ? 'dark' : 'light');
+            updateIcon(!isLight);
+        }
+
+        function updateIcon(toLight) {
+            themeIcon.setAttribute('data-lucide', toLight ? 'moon' : 'sun');
+            lucide.createIcons();
+        }
+
+        // Init
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateIcon(savedTheme === 'light');
+
+        themeBtn.addEventListener('click', toggleTheme);
+    </script>
+</body>
+
+</html>

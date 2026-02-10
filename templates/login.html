@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | ShareME</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .login-card {
+            max-width: 400px;
+            margin: 10vh auto;
+            text-align: center;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .error-msg {
+            color: #ef4444;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="login-card glass-panel">
+            <i data-lucide="lock" size="48" style="color: var(--primary); margin-bottom: 1rem;"></i>
+            <h2>Private Access</h2>
+            <p class="subtitle">Please enter the password to browse files</p>
+
+            <form action="/login" method="post">
+                <input type="password" name="password" class="ne_field" placeholder="Enter Password" required autofocus>
+                <button type="submit" class="ne_btn">Unlock Server</button>
+            </form>
+
+            {% if error %}
+            <p class="error-msg">{{ error }}</p>
+            {% endif %}
+        </div>
+    </div>
+    <script>
+        lucide.createIcons();
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+</body>
+
+</html>
