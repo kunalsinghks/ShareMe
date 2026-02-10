@@ -15,6 +15,7 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@v3
+      
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -34,21 +35,26 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: pip install pywin32
       
-      - name: Build
+      - name: Build with PyInstaller
         run: |
           pyinstaller ShareME.spec
-      
-      - name: Pack
+
+      - name: Pack Windows
+        if: matrix.os == 'windows-latest'
         run: |
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            powershell "Compress-Archive -Path dist/ShareME/* -DestinationPath ShareME_Windows.zip"
-          elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-            tar -czvf ShareME_Linux.tar.gz -C dist/ShareME .
-          else
-            zip -r ShareME_Mac.zip dist/ShareME
-          fi
-        shell: bash
-      
+          Compress-Archive -Path dist/ShareME/* -DestinationPath ShareME_Windows.zip
+        shell: pwsh
+
+      - name: Pack Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          tar -czvf ShareME_Linux.tar.gz -C dist/ShareME .
+
+      - name: Pack Mac
+        if: matrix.os == 'macos-latest'
+        run: |
+          zip -r ShareME_Mac.zip dist/ShareME
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
@@ -64,17 +70,14 @@ jobs:
     steps:
       - name: Download Artifacts
         uses: actions/download-artifact@v3
-        continue-on-error: true
       
-      - name: List Artifacts (Debug)
-        run: ls -R
-
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            **/*.zip
-            **/*.tar.gz
+            Binaries-windows-latest/*.zip
+            Binaries-ubuntu-latest/*.tar.gz
+            Binaries-macos-latest/*.zip
           draft: false
           prerelease: false
         env:
