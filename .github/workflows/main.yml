@@ -16,6 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: List Files
+        run: ls -R
+      
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -29,7 +32,7 @@ jobs:
       
       - name: Install Dependencies
         run: |
-          pip install pyinstaller qrcode[pil] pystray pillow requests uvicorn fastapi jinja2 python-multipart pyyaml
+          pip install pyinstaller qrcode[pil] pystray pillow requests uvicorn fastapi jinja2 python-multipart pyyaml customtkinter
       
       - name: Install Windows Deps
         if: matrix.os == 'windows-latest'
@@ -42,7 +45,6 @@ jobs:
       - name: Build Windows Installer
         if: matrix.os == 'windows-latest'
         run: |
-          # Copy source for bundling
           rm -rf bundle
           mkdir -p bundle
           cp -r dist/ShareME bundle/
@@ -52,32 +54,28 @@ jobs:
       - name: Pack Windows Portable
         if: matrix.os == 'windows-latest'
         run: |
-          powershell "Compress-Archive -Path dist/ShareME/* -DestinationPath ShareMe_Windows_Portable_v1.2.9.zip"
-          mv dist/ShareMe_Windows_Installer.exe ShareMe_Windows_Installer_v1.2.9.exe
+          powershell "Compress-Archive -Path dist/ShareME/* -DestinationPath ShareMe_Windows_Portable_v1.3.0.zip"
+          mv dist/ShareMe_Windows_Installer.exe ShareMe_Windows_Installer_v1.3.0.exe
         shell: bash
 
       - name: Pack Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
-          tar -czvf ShareMe_Linux_Portable_v1.2.9.tar.gz -C dist/ShareME .
+          tar -czvf ShareMe_Linux_Portable_v1.3.0.tar.gz -C dist/ShareME .
 
       - name: Pack Mac
         if: matrix.os == 'macos-latest'
         run: |
-          zip -r ShareMe_Mac_Portable_v1.2.9.zip dist/ShareME
+          zip -r ShareMe_Mac_Portable_v1.3.0.zip dist/ShareME
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Binaries-${{ matrix.os }}
           path: |
-            ShareMe_v1.2.9_*.zip
-            ShareMe_v1.2.9_*.tar.gz
-            ShareMe_v1.2.9_*.exe
             *.zip
             *.tar.gz
             *.exe
-          if-no-files-found: warn
 
   release:
     needs: build
