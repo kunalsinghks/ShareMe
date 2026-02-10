@@ -43,7 +43,8 @@ class ShareMEApp(ctk.CTk):
         super().__init__()
 
         # Window Setup
-        self.title("ShareME v1.3.5 | Cloudflare P2P")
+        # Window Setup
+        self.title("ShareME v1.3.6 | Cloudflare P2P")
         self.geometry("1000x800")
         
         # Appearance - LIGHT MODE DEFAULT
@@ -138,6 +139,11 @@ class ShareMEApp(ctk.CTk):
         
         self.btn_reset = ctk.CTkButton(self.action_bar, text="Clean Up", width=100, height=50, corner_radius=18, fg_color="transparent", text_color="#ef4444", font=ctk.CTkFont(weight="bold"), command=self.clear_shared)
         self.btn_reset.pack(side="right", padx=10)
+        
+        # Performance Progress Bar
+        self.add_progress = ctk.CTkProgressBar(self.main_view, height=4, corner_radius=0, fg_color="transparent", progress_color=BTN_PURPLE)
+        self.add_progress.grid(row=2, column=0, sticky="ew", pady=(85, 0))
+        self.add_progress.set(0)
 
         self.url_area = ctk.CTkFrame(self.main_view, height=130, corner_radius=30, border_width=1, border_color="gray30", fg_color=(LIGHT_SURFACE, DARK_SURFACE))
         self.url_area.grid(row=3, column=0, pady=(45, 0), sticky="ew")
@@ -217,8 +223,12 @@ class ShareMEApp(ctk.CTk):
 
     def _bg_add_files(self, files):
         self.start_btn.configure(state="disabled")
-        for f in files: self.process_path(f)
+        total = len(files)
+        for i, f in enumerate(files):
+            self.process_path(f)
+            self.after(0, lambda v=(i+1)/total: self.add_progress.set(v))
         self.after(0, self.refresh_list)
+        self.after(500, lambda: self.add_progress.set(0))
         self.after(0, lambda: self.start_btn.configure(state="normal"))
 
     def add_folder(self):
@@ -237,12 +247,21 @@ class ShareMEApp(ctk.CTk):
         if not os.path.exists(shared_dir): os.makedirs(shared_dir)
         name = os.path.basename(path)
         target = os.path.join(shared_dir, name)
+        
         try:
-            if os.path.isdir(path):
-                if os.path.exists(target): shutil.rmtree(target)
-                shutil.copytree(path, target)
-            else:
-                shutil.copy2(path, target)
+            # INSTANT SHARING: Use Symbolic Links (requires developer mode or admin)
+            # Fallback to hardlinks or copy if symlink fails
+            if os.path.exists(target):
+                if os.path.isdir(target): shutil.rmtree(target)
+                else: os.unlink(target)
+            
+            try:
+                # Try symlink first (instant, works for huge files)
+                os.symlink(path, target, target_is_directory=os.path.isdir(path))
+            except:
+                # Fallback to copy if symlink fails (e.g. partition boundary)
+                if os.path.isdir(path): shutil.copytree(path, target)
+                else: shutil.copy2(path, target)
         except Exception as e: print(f"Error: {e}")
 
     def clear_shared(self):
