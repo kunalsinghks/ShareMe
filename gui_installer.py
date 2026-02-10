@@ -6,11 +6,12 @@ import threading
 import sys
 import ctypes
 import pythoncom
+import winreg
 from win32com.client import Dispatch
 
 # Settings
 APP_NAME = "ShareMe"
-VERSION = "1.3.2"
+VERSION = "1.3.4"
 ICON_NAME = "favicon.ico"
 FONT_MAIN = ("Segoe UI", 10)
 FONT_BOLD = ("Segoe UI", 11, "bold")
@@ -118,10 +119,13 @@ class ShareMeInstaller:
                 self.root.after(0, lambda v=int((i+1)/total*100): self.progress.set(v))
             
             # Create Shortcut
+            exe_path = os.path.join(target_dir, "ShareME.exe")
             if self.create_desktop_icon.get():
-                exe_path = os.path.join(target_dir, "ShareME.exe")
                 desktop = os.path.join(os.path.expanduser("~"), "Desktop")
                 self.create_shortcut(exe_path, os.path.join(desktop, f"{APP_NAME}.lnk"), exe_path)
+
+            # Register for Uninstall (Windows Settings)
+            self.register_uninstall(target_dir, exe_path)
 
             self.root.after(0, self.finish_install)
         except Exception as e:
@@ -137,8 +141,37 @@ class ShareMeInstaller:
         shortcut.save()
 
     def finish_install(self):
-        messagebox.showinfo("Success", f"{APP_NAME} has been installed successfully!")
+        messagebox.showinfo("Success", f"{APP_NAME} has been installed successfully!\n\nYou can manage or uninstall it from Windows Settings.")
         self.root.quit()
+
+    def register_uninstall(self, install_dir, exe_path):
+        try:
+            # Create a simple uninstall batch file
+            uninstaller_path = os.path.join(install_dir, "uninstall.bat")
+            with open(uninstaller_path, "w") as f:
+                f.write(f'@echo off\n')
+                f.write(f'echo Uninstalling {APP_NAME}...\n')
+                f.write(f'timeout /t 2 /nobreak > nul\n')
+                f.write(f'taskkill /F /IM ShareME.exe /T 2>nul\n')
+                f.write(f'rd /s /q "{install_dir}"\n')
+                f.write(f'reg delete "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{APP_NAME}" /f\n')
+                f.write(f'del "%userprofile%\\Desktop\\{APP_NAME}.lnk" /q\n')
+                f.write(f'echo {APP_NAME} has been removed.\n')
+                f.write(f'pause\n')
+
+            # Write to Windows Registry for "Apps & Features"
+            key_path = f"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{APP_NAME}"
+            with winreg.CreateKey(winreg.HKEY_CURRENT_USER, key_path) as key:
+                winreg.SetValueEx(key, "DisplayName", 0, winreg.REG_SZ, APP_NAME)
+                winreg.SetValueEx(key, "DisplayVersion", 0, winreg.REG_SZ, VERSION)
+                winreg.SetValueEx(key, "DisplayIcon", 0, winreg.REG_SZ, exe_path)
+                winreg.SetValueEx(key, "InstallLocation", 0, winreg.REG_SZ, install_dir)
+                winreg.SetValueEx(key, "Publisher", 0, winreg.REG_SZ, "Kunal")
+                winreg.SetValueEx(key, "UninstallString", 0, winreg.REG_SZ, uninstaller_path)
+                winreg.SetValueEx(key, "NoModify", 0, winreg.REG_DWORD, 1)
+                winreg.SetValueEx(key, "NoRepair", 0, winreg.REG_DWORD, 1)
+        except Exception as e:
+            print(f"Failed to register uninstall: {e}")
 
 if __name__ == "__main__":
     if not ctypes.windll.shell32.IsUserAnAdmin():
