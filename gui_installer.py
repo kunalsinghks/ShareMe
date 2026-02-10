@@ -9,22 +9,26 @@ from win32com.client import Dispatch
 
 # Settings
 APP_NAME = "ShareMe"
-VERSION = "1.1.0"
+VERSION = "1.2.6"
 ICON_NAME = "favicon.ico"
+FONT_MAIN = ("Segoe UI", 10)
+FONT_BOLD = ("Segoe UI", 11, "bold")
+FONT_HEADER = ("Segoe UI", 20, "bold")
 
 class ShareMeInstaller:
     def __init__(self, root):
         self.root = root
-        self.root.title(f"{APP_NAME} Setup")
-        self.root.geometry("600x450")
-        self.root.set_appearance_mode = None # Standard Tkinter
+        self.root.title(f"{APP_NAME} v{VERSION} Setup")
+        self.root.geometry("620x480")
+        self.root.configure(bg="#ffffff")
         self.root.resizable(False, False)
         
         # Style
         self.style = ttk.Style()
-        self.style.configure("TButton", font=("Outfit", 10))
-        self.style.configure("TLabel", font=("Outfit", 10))
-        self.style.configure("Header.TLabel", font=("Outfit", 18, "bold"))
+        self.style.theme_use('clam')
+        self.style.configure("TButton", font=FONT_MAIN, padding=10)
+        self.style.configure("TLabel", font=FONT_MAIN, background="#ffffff")
+        self.style.configure("Header.TLabel", font=FONT_HEADER, background="#6366f1", foreground="white")
 
         # State
         self.install_path = tk.StringVar(value=os.path.join(os.environ['LOCALAPPDATA'], APP_NAME))
@@ -86,13 +90,15 @@ class ShareMeInstaller:
             if not os.path.exists(target_dir):
                 os.makedirs(target_dir)
 
-            # In bundle mode, files are in sys._MEIPASS or same dir
-            src_dir = os.path.join(os.getcwd(), "dist", "ShareME")
+            # Fix path issue: Use relative path to installer location
+            base_path = getattr(sys, '_MEIPASS', os.path.abspath(os.path.dirname(__file__)))
+            src_dir = os.path.join(base_path, "ShareME")
+            
+            # If ShareME folder isn't found, look for files in same dir (Portable mode)
             if not os.path.exists(src_dir):
-                # Fallback for source dev mode
-                src_dir = os.path.join(os.getcwd(), "dist", "ShareME")
+                src_dir = base_path
 
-            files = os.listdir(src_dir)
+            files = [f for f in os.listdir(src_dir) if f not in ["ShareMe_Setup.exe", "gui_installer.py", "windows_installer.py"]]
             total = len(files)
             
             for i, item in enumerate(files):
