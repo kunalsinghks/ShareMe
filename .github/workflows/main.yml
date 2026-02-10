@@ -42,31 +42,27 @@ jobs:
         run: |
           pyinstaller ShareME.spec
       
-      - name: Build Windows Installer
+      - name: Build Windows Installer (Inno Setup)
         if: matrix.os == 'windows-latest'
         run: |
-          rm -rf bundle
-          mkdir -p bundle
-          cp -r dist/ShareME bundle/
-          pyinstaller --onefile --windowed --icon=favicon.ico --name ShareMe_Windows_Installer --add-data "dist/ShareME:ShareME" gui_installer.py
-        shell: bash
+          iscc ShareME_Setup.iss
+        shell: pwsh
 
       - name: Pack Windows Portable
         if: matrix.os == 'windows-latest'
         run: |
-          powershell "Compress-Archive -Path dist/ShareME/* -DestinationPath ShareMe_Windows_Portable_v1.3.6.zip"
-          mv dist/ShareMe_Windows_Installer.exe ShareMe_Windows_Installer_v1.3.6.exe
+          powershell "Compress-Archive -Path dist/ShareME/* -DestinationPath ShareMe_Windows_Portable_v1.3.7.zip"
         shell: bash
 
       - name: Pack Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
-          tar -czvf ShareMe_Linux_Portable_v1.3.6.tar.gz -C dist/ShareME .
+          tar -czvf ShareMe_Linux_Portable_v1.3.7.tar.gz -C dist/ShareME .
 
       - name: Pack Mac
         if: matrix.os == 'macos-latest'
         run: |
-          zip -r ShareMe_Mac_Portable_v1.3.6.zip dist/ShareME
+          zip -r ShareMe_Mac_Portable_v1.3.7.zip dist/ShareME
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
