@@ -10,6 +10,7 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
     steps:
@@ -18,28 +19,37 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
+      
+      - name: Install System Deps (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxcb-cursor0 libxkbcommon-x11-0 libxcb-xinerama0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xkb1 libxkbcommon0
+      
       - name: Install Dependencies
         run: |
           pip install pyinstaller qrcode[pil] pystray pillow requests uvicorn fastapi jinja2 python-multipart pyyaml
+      
       - name: Install Windows Deps
         if: matrix.os == 'windows-latest'
         run: pip install pywin32
+      
       - name: Build
         run: |
           pyinstaller ShareME.spec
-      - name: Pack Win
-        if: matrix.os == 'windows-latest'
+      
+      - name: Pack
         run: |
-          Compress-Archive -Path dist/ShareME/* -DestinationPath ShareME_Windows.zip
-      - name: Pack Linux
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          tar -czvf ShareME_Linux.tar.gz -C dist/ShareME .
-      - name: Pack Mac
-        if: matrix.os == 'macos-latest'
-        run: |
-          zip -r ShareME_Mac.zip dist/ShareME
-      - name: Upload
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            powershell "Compress-Archive -Path dist/ShareME/* -DestinationPath ShareME_Windows.zip"
+          elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+            tar -czvf ShareME_Linux.tar.gz -C dist/ShareME .
+          else
+            zip -r ShareME_Mac.zip dist/ShareME
+          fi
+        shell: bash
+      
+      - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: Binaries-${{ matrix.os }}
@@ -50,15 +60,22 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
+    if: always() && startsWith(github.ref, 'refs/tags/')
     steps:
-      - uses: actions/download-artifact@v3
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        continue-on-error: true
+      
+      - name: List Artifacts (Debug)
+        run: ls -R
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            Binaries-windows-latest/*.zip
-            Binaries-ubuntu-latest/*.tar.gz
-            Binaries-macos-latest/*.zip
+            **/*.zip
+            **/*.tar.gz
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
