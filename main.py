@@ -153,7 +153,7 @@ async def list_files(request: Request, path: str = Query("")):
         "files": sorted(files, key=lambda x: x['name'].lower()),
         "public_url": PUBLIC_URL,
         "breadcrumbs": breadcrumbs,
-        "version": "v1.6.8"
+        "version": "v1.6.9"
     })
 
 @app.get("/download")
