@@ -1,6 +1,6 @@
 ; ShareME Inno Setup Script
 #define MyAppName "ShareMe"
-#define MyAppVersion "1.5.3"
+#define MyAppVersion "1.6.0"
 #define MyAppPublisher "Kunal"
 #define MyAppURL "https://kunalsinghks.github.io/ShareMe/"
 #define MyAppExeName "ShareME.exe"

@@ -58,10 +58,11 @@ def get_safe_path(requested_path: str):
     
     # Remove leading slashes/dots
     safe_suffix = requested_path.lstrip("/").lstrip("\\")
-    full_path = os.path.abspath(os.path.join(SHARED_DIR, safe_suffix))
+    full_path = os.path.normpath(os.path.join(SHARED_DIR, safe_suffix))
     
-    # Ensure the path is within SHARED_DIR
-    if not full_path.startswith(SHARED_DIR):
+    # Ensure the path is within SHARED_DIR (case-insensitive for Windows)
+    if not os.path.normcase(full_path).startswith(os.path.normcase(SHARED_DIR)):
+        print(f"[ERROR] Security violation: {full_path} is outside {SHARED_DIR}")
         raise HTTPException(status_code=403, detail="Access denied")
     
     return full_path
@@ -97,43 +98,53 @@ async def list_files(request: Request, path: str = Query("")):
     full_path = get_safe_path(path)
     
     if not os.path.exists(full_path):
+        print(f"[ERROR] Path not found: {full_path}")
         raise HTTPException(status_code=404, detail="Path not found")
     
     if os.path.isfile(full_path):
         return FileResponse(full_path)
 
-    items = os.listdir(full_path)
+    try:
+        items = os.listdir(full_path)
+    except Exception as e:
+        print(f"[ERROR] Failed to list items in {full_path}: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+
     folders = []
     files = []
     
     for item in items:
-        item_path = os.path.join(full_path, item)
-        # Use realpath to resolve symbolic links and avoid WinError 448
-        real_item_path = os.path.realpath(item_path)
-        rel_path = os.path.relpath(item_path, SHARED_DIR)
-        
-        if os.path.isdir(real_item_path):
-            folders.append({
-                "name": item,
-                "path": rel_path
-            })
-        else:
-            stat = os.stat(real_item_path)
-            files.append({
-                "name": item,
-                "path": rel_path,
-                "size": get_file_size_h(stat.st_size),
-                "modified": datetime.datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M')
-            })
+        try:
+            item_path = os.path.join(full_path, item)
+            # Use realpath to resolve symbolic links and avoid WinError 448
+            real_item_path = os.path.realpath(item_path)
+            rel_path = os.path.relpath(item_path, SHARED_DIR)
+            
+            if os.path.isdir(real_item_path):
+                folders.append({
+                    "name": item,
+                    "path": rel_path
+                })
+            else:
+                stat = os.stat(real_item_path)
+                files.append({
+                    "name": item,
+                    "path": rel_path,
+                    "size": get_file_size_h(stat.st_size),
+                    "modified": datetime.datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M')
+                })
+        except Exception as e:
+            print(f"[DEBUG] Skipping item {item} due to error: {e}")
+            continue
             
     # Breadcrumbs
     breadcrumbs = []
     if path:
-        parts = path.split(os.sep)
+        parts = path.replace("\\", "/").split("/")
         curr_url = ""
         for p in parts:
             if not p: continue
-            curr_url += p + os.sep
+            curr_url += p + "/"
             breadcrumbs.append({"name": p, "url": f"/?path={curr_url}"})
 
     return templates.TemplateResponse("index.html", {
@@ -141,7 +152,8 @@ async def list_files(request: Request, path: str = Query("")):
         "folders": sorted(folders, key=lambda x: x['name'].lower()),
         "files": sorted(files, key=lambda x: x['name'].lower()),
         "public_url": PUBLIC_URL,
-        "breadcrumbs": breadcrumbs
+        "breadcrumbs": breadcrumbs,
+        "version": "v1.6.0"
     })
 
 @app.get("/download")

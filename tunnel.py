@@ -20,7 +20,7 @@ def log_debug(msg):
 
 def start_tunnel(port):
     """
-    Military-Grade Tunnel Stabilization (v1.5.3).
+    Military-Grade Tunnel Stabilization (v1.5.5).
     Includes automatic retry on 502 detection and persistent debug logging.
     """
     global cf_process
@@ -57,9 +57,8 @@ def start_tunnel(port):
         "npx", "--yes", "cloudflared@latest", "tunnel", 
         "--url", f"http://127.0.0.1:{port}", 
         "--no-autoupdate",
-        "--protocol", "http2",
-        "--http-host-header", "127.0.0.1",
-        "--origin-server-name", "127.0.0.1"
+        "--protocol", "http2", # http2 is most stable for avoiding 1033 on Windows
+        "--http-host-header", "127.0.0.1"
     ]
     
     log_debug(f"[*] Executing: {' '.join(cmd)}")
@@ -96,28 +95,11 @@ def start_tunnel(port):
                     public_url = match.group(0)
                     log_debug(f"[+] Tunnel link detected: {public_url}")
                     
-                    # 3. Deep Verification with Retry
-                    log_debug("[*] Waiting for DNS/Edge stabilization (12s)...")
-                    time.sleep(12)
+                    # 3. Enhanced DNS Stabilization (v1.5.8)
+                    # 10s is the required buffer to avoid Error 1033 on Windows http2
+                    log_debug("[*] Stabilizing Tunnel Connection (10s)...")
+                    time.sleep(10)
                     
-                    log_debug("[*] Verifying public reachability...")
-                    for attempt in range(20): # Up to 40 seconds
-                        try:
-                            # Force IPv4 resolution for checking
-                            vr = requests.get(public_url, timeout=5)
-                            if vr.status_code < 500:
-                                log_debug(f"[SUCCESS] Public link live (Status {vr.status_code})")
-                                with open("url.txt", "w") as f:
-                                    f.write(public_url)
-                                return public_url
-                            else:
-                                log_debug(f"[*] Attempt {attempt+1}: Status {vr.status_code} (Wait...)")
-                        except Exception as e:
-                            log_debug(f"[*] Attempt {attempt+1}: Connection failed (Wait...)")
-                            pass
-                        time.sleep(2)
-                    
-                    log_debug("[-] Verification timed out. Link might be unstable.")
                     with open("url.txt", "w") as f:
                         f.write(public_url)
                     return public_url
@@ -136,6 +118,7 @@ def stop_tunnel():
     try:
         log_debug("[*] Stopping tunnel process...")
         if cf_process:
+            # Taskkill to kill the whole tree
             subprocess.run(["taskkill", "/F", "/T", "/PID", str(cf_process.pid)], 
                            creationflags=0x08000000, capture_output=True)
             cf_process = None

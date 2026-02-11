@@ -1,4 +1,4 @@
-import os
+﻿import os
 import shutil
 import threading
 import sys
@@ -15,14 +15,13 @@ import qrcode
 import io
 import pystray
 from pystray import MenuItem as item
-import requests
 
 # Import our existing logic
 import main
 import config
 import tunnel
 
-# --- Premium Refined Palette (v1.4.2 Style) ---
+# --- Premium Refined Palette ---
 LIGHT_BG = "#FDFDFD"
 LIGHT_SURFACE = "#F3F6FB"
 LIGHT_SHADOW_DARK = "#D1D9E6"
@@ -44,22 +43,26 @@ class ShareMEApp(ctk.CTk):
         super().__init__()
 
         # Window Setup
-        self.title("ShareME v1.6.0 | Performance Edition")
+        self.title("ShareME v1.3.1 | Cloudflare P2P")
         self.geometry("1000x800")
         
-        # Appearance - LIGHT MODE DEFAULT (As requested)
+        # Appearance - LIGHT MODE DEFAULT
         ctk.set_appearance_mode("light")
         self.main_font = "Outfit"
 
         # Configuration & State
         self.is_running = False
-        self.public_url = ""
+        self.public_url = "---"
         self.server_port = 8000
         
         conf = config.load_config()
         self.current_password = conf.get("access_password") or ""
 
         self.configure(fg_color=(LIGHT_BG, DARK_BG))
+
+        # System Tray Support
+        self.protocol("WM_DELETE_WINDOW", self.hide_window)
+        self.create_tray_icon()
 
         # --- UI LAYOUT ---
         self.grid_columnconfigure(1, weight=1)
@@ -74,7 +77,7 @@ class ShareMEApp(ctk.CTk):
 
         self.p_badge = ctk.CTkFrame(self.sidebar, fg_color=("#EEF2FF", "#1E1B4B"), corner_radius=12)
         self.p_badge.grid(row=1, column=0, padx=30, pady=10, sticky="ew")
-        self.p_label = ctk.CTkLabel(self.p_badge, text="☁ CLOUDFLARE TUNNEL", text_color="#6366F1", font=ctk.CTkFont(family=self.main_font, size=11, weight="bold"))
+        self.p_label = ctk.CTkLabel(self.p_badge, text="Γÿü CLOUDFLARE TUNNEL", text_color="#6366F1", font=ctk.CTkFont(family=self.main_font, size=11, weight="bold"))
         self.p_label.pack(pady=8)
 
         self.sec_box = ctk.CTkFrame(self.sidebar, corner_radius=25, border_width=1, border_color=(LIGHT_SHADOW_DARK, "#202020"), fg_color=(LIGHT_BG, DARK_BG))
@@ -94,10 +97,10 @@ class ShareMEApp(ctk.CTk):
         self.qr_label = ctk.CTkLabel(self.qr_card, text="")
         
         self.theme_switch = ctk.CTkSwitch(self.sidebar, text="Dark Atmosphere", command=self.toggle_theme, font=ctk.CTkFont(family=self.main_font, size=13))
-        self.theme_switch.deselect() # Start with light
+        self.theme_switch.deselect()
         self.theme_switch.grid(row=5, column=0, padx=40, pady=30, sticky="s")
         
-        self.status_badge = ctk.CTkLabel(self.sidebar, text="● SYSTEM READY", text_color="gray50", font=ctk.CTkFont(family=self.main_font, size=12, weight="bold"))
+        self.status_badge = ctk.CTkLabel(self.sidebar, text="ΓùÅ SYSTEM READY", text_color="gray50", font=ctk.CTkFont(family=self.main_font, size=12, weight="bold"))
         self.status_badge.grid(row=6, column=0, pady=(0, 40))
         self.sidebar.grid_rowconfigure(4, weight=1)
 
@@ -124,7 +127,6 @@ class ShareMEApp(ctk.CTk):
         self.list_box = ctk.CTkTextbox(self.list_container, font=ctk.CTkFont(family=self.main_font, size=16), fg_color="transparent", text_color=("gray20", "gray80"), border_width=0)
         self.list_box.grid(row=0, column=0, padx=35, pady=35, sticky="nsew")
 
-        # Action Bar (Files/Folders)
         self.action_bar = ctk.CTkFrame(self.main_view, fg_color="transparent")
         self.action_bar.grid(row=2, column=0, pady=(35, 0), sticky="ew")
         
@@ -137,12 +139,11 @@ class ShareMEApp(ctk.CTk):
         self.btn_reset = ctk.CTkButton(self.action_bar, text="Clean Up", width=100, height=50, corner_radius=18, fg_color="transparent", text_color="#ef4444", font=ctk.CTkFont(weight="bold"), command=self.clear_shared)
         self.btn_reset.pack(side="right", padx=10)
 
-        # URL and Link Display
         self.url_area = ctk.CTkFrame(self.main_view, height=130, corner_radius=30, border_width=1, border_color="gray30", fg_color=(LIGHT_SURFACE, DARK_SURFACE))
         self.url_area.grid(row=3, column=0, pady=(45, 0), sticky="ew")
         
         self.url_display = ctk.CTkEntry(self.url_area, height=60, border_width=0, corner_radius=18, font=ctk.CTkFont(family=self.main_font, size=15), fg_color=(LIGHT_BG, DARK_BG))
-        self.url_display.insert(0, "Public Access Link: Offline")
+        self.url_display.insert(0, "Public Access Link: Waiting for connection...")
         self.url_display.configure(state="readonly")
         self.url_display.pack(side="left", fill="x", expand=True, padx=20, pady=25)
         
@@ -157,56 +158,79 @@ class ShareMEApp(ctk.CTk):
 
         self.refresh_list()
 
+    def hide_window(self):
+        self.withdraw()
+        # Optionally show a notification
+    
+    def show_window(self):
+        self.deiconify()
+        self.lift()
+        self.focus_force()
+
+    def quit_app(self):
+        self.is_running = False
+        tunnel.stop_tunnel()
+        try:
+            os.system("taskkill /F /IM python.exe /FI \"WINDOWTITLE ne ShareME*\" /T")
+        except: pass
+        self.tray.stop()
+        self.destroy()
+        sys.exit(0)
+
+    def create_tray_icon(self):
+        def on_clicked(icon, item):
+            if str(item) == "Open ShareME":
+                self.after(0, self.show_window)
+            elif str(item) == "Exit Completely":
+                self.after(0, self.quit_app)
+
+        # Create a simple icon image
+        image = Image.new('RGB', (64, 64), BTN_PURPLE)
+        dc = ImageDraw.Draw(image)
+        dc.ellipse((10, 10, 54, 54), fill=LIGHT_BG)
+        
+        menu = pystray.Menu(
+            item('Open ShareME', on_clicked),
+            item('Exit Completely', on_clicked)
+        )
+        self.tray = pystray.Icon("ShareME", image, "ShareME File Server", menu)
+        threading.Thread(target=self.tray.run, daemon=True).start()
+
     def toggle_theme(self):
-        if self.theme_switch.get() == 1: ctk.set_appearance_mode("dark")
-        else: ctk.set_appearance_mode("light")
+        if self.theme_switch.get() == 1:
+            ctk.set_appearance_mode("dark")
+        else:
+            ctk.set_appearance_mode("light")
 
     def update_config(self):
         new_pw = self.pass_entry.get().strip()
         conf_data = config.load_config()
         conf_data["access_password"] = new_pw
         config.save_config(conf_data)
-        self.status_badge.configure(text="● CONFIG UPDATED", text_color=BTN_PURPLE)
-        self.after(2000, lambda: self.status_badge.configure(text=("● LIVE" if self.is_running else "● SYSTEM READY"), text_color=("#10b981" if self.is_running else "gray50")))
+        self.status_badge.configure(text="ΓùÅ CONFIG UPDATED", text_color=BTN_PURPLE)
+        self.after(2000, lambda: self.status_badge.configure(text=("ΓùÅ LIVE" if self.is_running else "ΓùÅ SYSTEM READY"), text_color=("#10b981" if self.is_running else "gray50")))
 
-    # --- THREADED FILE ADDING (Fixes Jitter/Freezing) ---
     def add_files(self):
         files = filedialog.askopenfilenames()
         if files:
-            self.status_badge.configure(text="● ADDING FILES...", text_color=BTN_PURPLE)
-            threading.Thread(target=lambda: self._bg_process_files(files), daemon=True).start()
+            threading.Thread(target=self._bg_add_files, args=(files,), daemon=True).start()
 
-    def _bg_process_files(self, files):
+    def _bg_add_files(self, files):
+        self.start_btn.configure(state="disabled")
         for f in files: self.process_path(f)
         self.after(0, self.refresh_list)
-        self.after(0, lambda: self.status_badge.configure(text=("● LIVE" if self.is_running else "● SYSTEM READY"), text_color=("#10b981" if self.is_running else "gray50")))
+        self.after(0, lambda: self.start_btn.configure(state="normal"))
 
     def add_folder(self):
         folder = filedialog.askdirectory()
         if folder:
-            self.status_badge.configure(text="● ADDING FOLDER...", text_color=BTN_PURPLE)
-            threading.Thread(target=lambda: self._bg_process_folder(folder), daemon=True).start()
+            threading.Thread(target=self._bg_add_folder, args=(folder,), daemon=True).start()
 
-    def _bg_process_folder(self, folder):
+    def _bg_add_folder(self, folder):
+        self.start_btn.configure(state="disabled")
         self.process_path(folder)
         self.after(0, self.refresh_list)
-        self.after(0, lambda: self.status_badge.configure(text=("● LIVE" if self.is_running else "● SYSTEM READY"), text_color=("#10b981" if self.is_running else "gray50")))
-
-    def clear_shared(self):
-        self.status_badge.configure(text="● CLEANING...", text_color="#ef4444")
-        threading.Thread(target=self._bg_clear_shared, daemon=True).start()
-
-    def _bg_clear_shared(self):
-        shared_dir = os.path.abspath("shared")
-        if os.path.exists(shared_dir):
-            for filename in os.listdir(shared_dir):
-                file_path = os.path.join(shared_dir, filename)
-                try:
-                    if os.path.islink(file_path) or os.path.isfile(file_path): os.unlink(file_path)
-                    else: shutil.rmtree(file_path)
-                except: pass
-        self.after(0, self.refresh_list)
-        self.after(0, lambda: self.status_badge.configure(text=("● LIVE" if self.is_running else "● SYSTEM READY"), text_color=("#10b981" if self.is_running else "gray50")))
+        self.after(0, lambda: self.start_btn.configure(state="normal"))
 
     def process_path(self, path):
         shared_dir = os.path.abspath("shared")
@@ -214,14 +238,25 @@ class ShareMEApp(ctk.CTk):
         name = os.path.basename(path)
         target = os.path.join(shared_dir, name)
         try:
-            if os.path.exists(target):
-                if os.path.islink(target) or os.path.isfile(target): os.unlink(target)
-                else: shutil.rmtree(target)
-            try: os.symlink(path, target, target_is_directory=os.path.isdir(path))
-            except:
-                if os.path.isdir(path): shutil.copytree(path, target)
-                else: shutil.copy2(path, target)
-        except Exception as e: print(f"[BG-ERROR] {e}")
+            if os.path.isdir(path):
+                if os.path.exists(target): shutil.rmtree(target)
+                shutil.copytree(path, target)
+            else:
+                shutil.copy2(path, target)
+        except Exception as e: print(f"Error: {e}")
+
+    def clear_shared(self):
+        shared_dir = os.path.abspath("shared")
+        if os.path.exists(shared_dir):
+            try:
+                for filename in os.listdir(shared_dir):
+                    file_path = os.path.join(shared_dir, filename)
+                    try:
+                        if os.path.isfile(file_path): os.unlink(file_path)
+                        elif os.path.isdir(file_path): shutil.rmtree(file_path)
+                    except: pass
+            except: pass
+        self.refresh_list()
 
     def refresh_list(self):
         shared_dir = os.path.abspath("shared")
@@ -232,8 +267,8 @@ class ShareMEApp(ctk.CTk):
         if not items:
             self.list_box.insert("0.0", "The workspace is empty. Add files above.")
         else:
-            self.list_box.insert("0.0", "CURRENTLY SHARING:\n" + ("—"*50) + "\n\n")
-            for item in items: self.list_box.insert("end", f" • {item}\n")
+            self.list_box.insert("0.0", "CURRENTLY SHARING:\n" + ("ΓÇö"*50) + "\n\n")
+            for item in items: self.list_box.insert("end", f" ΓÇó {item}\n")
         self.list_box.configure(state="disabled")
 
     def toggle_server(self):
@@ -241,56 +276,71 @@ class ShareMEApp(ctk.CTk):
         else: self.stop_server()
 
     def start_server(self):
-        import socket
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            if s.connect_ex(('127.0.0.1', 8000)) == 0:
-                messagebox.showerror("Port Error", "Port 8000 is already in use.")
-                return
-
         self.is_running = True
         self.start_btn.configure(text="STOP SHARING", fg_color="#ef4444", hover_color="#dc2626")
-        self.status_badge.configure(text="● INITIALIZING...", text_color=BTN_PURPLE)
-        
-        # Async Backend Startup
-        threading.Thread(target=lambda: uvicorn.run("main:app", host="0.0.0.0", port=8000, log_level="error"), daemon=True).start()
-        
+        self.status_badge.configure(text="ΓùÅ STARTING...", text_color=BTN_PURPLE)
+        threading.Thread(target=lambda: uvicorn.run(main.app, host="127.0.0.1", port=8000, log_level="error"), daemon=True).start()
+        time.sleep(3)
         def tunnel_watch():
             curr_url = tunnel.start_cloudflared(self.server_port)
             if curr_url and self.is_running: 
                 self.public_url = curr_url
-                main.PUBLIC_URL = curr_url
                 self.after(0, lambda: self.update_url_box(curr_url))
-                self.after(0, lambda: self.status_badge.configure(text="● LIVE ONLINE", text_color="#10b981"))
+                self.after(0, lambda: self.status_badge.configure(text="ΓùÅ VERIFYING...", text_color=BTN_PURPLE))
+                def verify_dns():
+                    for _ in range(30):
+                        if not self.is_running: break
+                        try:
+                            r = requests.head(curr_url, timeout=5)
+                            if r.status_code < 500:
+                                self.after(0, lambda: self.status_badge.configure(text="ΓùÅ LIVE ONLINE", text_color="#10b981"))
+                                return
+                        except: pass
+                        time.sleep(2)
+                    self.after(0, lambda: self.status_badge.configure(text="ΓùÅ DNS SLOW / LIVE", text_color="#fbbf24"))
+                threading.Thread(target=verify_dns, daemon=True).start()
             else:
-                self.after(0, lambda: self.status_badge.configure(text="● ERROR", text_color="#ef4444"))
-
+                self.after(0, lambda: self.status_badge.configure(text="ΓùÅ ERROR", text_color="#ef4444"))
+                self.after(0, lambda: self.update_url_box("Tunnel failed. Try restarting sharing."))
         threading.Thread(target=tunnel_watch, daemon=True).start()
 
     def stop_server(self):
         self.is_running = False
-        tunnel.stop_tunnel()
         self.start_btn.configure(text="START SHARING", fg_color=BTN_PURPLE, hover_color=BTN_PURPLE_HOVER)
-        self.status_badge.configure(text="● SYSTEM READY", text_color="gray50")
-        self.update_url_box("Public Access Link: Offline")
+        self.status_badge.configure(text="ΓùÅ SYSTEM READY", text_color="gray50")
+        self.url_display.configure(state="normal")
+        self.url_display.delete(0, "end")
+        self.url_display.insert(0, "Public Access Link: Offline")
+        self.url_display.configure(state="readonly")
         self.qr_card.grid_forget()
+        tunnel.stop_tunnel()
+        try:
+            os.system("taskkill /F /IM python.exe /FI \"WINDOWTITLE ne ShareME*\" /T")
+        except: pass
 
     def update_url_box(self, url):
         self.url_display.configure(state="normal")
         self.url_display.delete(0, "end")
-        self.url_display.insert(0, url)
+        if "http" in url:
+            self.url_display.insert(0, f"Link Ready: {url} (Ready in 30s)")
+        else:
+            self.url_display.insert(0, url)
         self.url_display.configure(state="readonly")
 
     def copy_link(self):
-        if self.public_url:
+        link = self.public_url
+        if "http" in link: 
             self.clipboard_clear()
-            self.clipboard_append(self.public_url)
-            messagebox.showinfo("Copied", "Link copied to clipboard!")
+            self.clipboard_append(link)
+            self.status_badge.configure(text="ΓùÅ LINK COPIED", text_color=BTN_PURPLE)
+            self.after(2000, lambda: self.status_badge.configure(text=("ΓùÅ LIVE ONLINE" if self.is_running else "ΓùÅ SYSTEM READY"), text_color=("#10b981" if self.is_running else "gray50")))
 
     def open_link(self):
-        if self.public_url: webbrowser.open(self.public_url)
+        link = self.public_url
+        if "http" in link: webbrowser.open(link)
 
     def show_qr(self):
-        if not self.public_url: return
+        if not self.public_url or "http" not in self.public_url: return
         qr = qrcode.QRCode(version=1, box_size=10, border=4)
         qr.add_data(self.public_url)
         qr.make(fit=True)
