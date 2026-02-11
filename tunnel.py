@@ -68,8 +68,8 @@ def start_tunnel(port):
             cmd, 
             stdout=subprocess.PIPE, 
             stderr=subprocess.STDOUT, 
-            bufsize=1, 
-            universal_newlines=True, 
+            # RAW BINARY MODE - No text buffering, no universal newlines
+            # We handle decoding manually in the thread
             shell=True,
             creationflags=0x08000000 if os.name == 'nt' else 0 
         )
@@ -82,9 +82,14 @@ def start_tunnel(port):
         def read_loop(proc):
             global detected_url
             while True:
-                line = proc.stdout.readline()
-                if not line: break
+                # Binary read to bypass any encoding/text-mode buffering weirdness in EXE
+                line_bin = proc.stdout.readline()
+                if not line_bin: break
                 
+                try:
+                    line = line_bin.decode('utf-8', errors='ignore')
+                except: continue
+
                 # Debug log
                 try:
                     with open(get_log_file(), "a", encoding="utf-8") as f:
