@@ -64,14 +64,19 @@ def start_tunnel(port):
     log_debug(f"[*] Executing: {' '.join(cmd)}")
     
     try:
+        startupinfo = None
+        if os.name == 'nt':
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = subprocess.SW_HIDE
+
         cf_process = subprocess.Popen(
             cmd, 
             stdout=subprocess.PIPE, 
             stderr=subprocess.STDOUT, 
-            # RAW BINARY MODE - No text buffering, no universal newlines
-            # We handle decoding manually in the thread
-            shell=True,
-            creationflags=0x08000000 if os.name == 'nt' else 0 
+            shell=False, # Changed to False for better signal handling
+            startupinfo=startupinfo,
+            creationflags=0
         )
         
         # Hybrid Start: Read first few lines synchronously to catch immediate errors/links

@@ -233,3 +233,30 @@
 [CF-OUT] 2026-02-11T12:58:20Z INF ICMP proxy will use ::1 in zone Loopback Pseudo-Interface 1 as source for IPv6
 [CF-OUT] 2026-02-11T12:58:20Z INF Starting metrics server on 127.0.0.1:1331/metrics
 [CF-OUT] 2026-02-11T12:58:21Z INF Registered tunnel connection connIndex=0 connection=cf7204e4-aaf0-4555-b1c4-e6bb2f4cf410 event=0 ip=198.41.200.13 location=bom10 protocol=http2
+[2026-02-11 18:36:49] [*] Initializing tunnel on port 8000...
+[2026-02-11 18:36:51] [+] Local server confirmed at localhost:8000
+[2026-02-11 18:36:51] [*] Executing: npx --yes cloudflared@latest tunnel --url http://127.0.0.1:8000 --no-autoupdate --protocol http2 --http-host-header 127.0.0.1
+[CF-OUT] 2026-02-11T13:06:53Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+[CF-OUT] 2026-02-11T13:06:53Z INF Requesting new quick Tunnel on trycloudflare.com...
+[CF-OUT] 2026-02-11T13:06:58Z INF +--------------------------------------------------------------------------------------------+
+[CF-OUT] 2026-02-11T13:06:58Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+[CF-OUT] 2026-02-11T13:06:58Z INF |  https://kinds-comparing-farms-jun.trycloudflare.com                                       |
+[CF-OUT] 2026-02-11T13:06:58Z INF +--------------------------------------------------------------------------------------------+
+[CF-OUT] 2026-02-11T13:06:58Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp]
+[CF-OUT] 2026-02-11T13:06:58Z INF Version 2026.2.0 (Checksum b3279f2186a1c3c438ad5865e802bbbec26090c5d3fdb4ac1113f1143a94837a)
+[CF-OUT] 2026-02-11T13:06:58Z INF GOOS: windows, GOVersion: go1.24.13, GoArch: amd64
+[CF-OUT] 2026-02-11T13:06:58Z INF Settings: map[ha-connections:1 http-host-header:127.0.0.1 no-autoupdate:true p:http2 protocol:http2 url:http://127.0.0.1:8000]
+[CF-OUT] 2026-02-11T13:06:58Z INF cloudflared will not automatically update on Windows systems.
+[2026-02-11 18:36:58] [+] Tunnel link detected: https://kinds-comparing-farms-jun.trycloudflare.com
+[2026-02-11 18:36:58] [*] Waiting for DNS propagation (4s)...
+[CF-OUT] 2026-02-11T13:06:58Z INF Generated Connector ID: f4561bde-2941-4d33-92c1-ab33c2e129b2
+[CF-OUT] 2026-02-11T13:06:58Z INF Initial protocol http2
+[CF-OUT] 2026-02-11T13:06:58Z INF ICMP proxy will use 192.168.0.37 as source for IPv4
+[CF-OUT] 2026-02-11T13:06:58Z INF ICMP proxy will use ::1 in zone Loopback Pseudo-Interface 1 as source for IPv6
+[CF-OUT] 2026-02-11T13:06:58Z INF cloudflared does not support loading the system root certificate pool on Windows. Please use --origin-ca-pool <PATH> to specify the path to the certificate pool
+[CF-OUT] 2026-02-11T13:06:58Z INF ICMP proxy will use 192.168.0.37 as source for IPv4
+[CF-OUT] 2026-02-11T13:06:58Z INF ICMP proxy will use ::1 in zone Loopback Pseudo-Interface 1 as source for IPv6
+[CF-OUT] 2026-02-11T13:06:58Z INF Starting metrics server on 127.0.0.1:2300/metrics
+[CF-OUT] 2026-02-11T13:06:59Z INF Registered tunnel connection connIndex=0 connection=055743b0-3f76-4787-9740-b0824c46c43e event=0 ip=198.41.192.107 location=bom03 protocol=http2
+[CF-OUT] 2026-02-11T13:07:03Z ERR Failed to initialize DNS local resolver error="lookup region1.v2.argotunnel.com: i/o timeout"
+[2026-02-11 18:37:30] [*] Stopping tunnel process...
