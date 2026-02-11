@@ -18,7 +18,7 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-:: Launching via python is more reliable for networking handshakes
-echo [*] Launching ShareME...
-start "" python gui.py
+:: Launching via pythonw.exe hides the black console window
+echo [*] Launching ShareME in Background Mode...
+start "" pythonw gui.py
 exit
