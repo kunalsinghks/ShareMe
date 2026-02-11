@@ -68,6 +68,7 @@ def start_tunnel(port):
             cmd, 
             stdout=subprocess.PIPE, 
             stderr=subprocess.STDOUT, 
+            bufsize=1, # Re-enable line buffering for instant output
             universal_newlines=True, # Improved text handling
             shell=True,
             creationflags=0x08000000 if os.name == 'nt' else 0 
