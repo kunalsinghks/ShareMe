@@ -108,15 +108,17 @@ async def list_files(request: Request, path: str = Query("")):
     
     for item in items:
         item_path = os.path.join(full_path, item)
+        # Use realpath to resolve symbolic links and avoid WinError 448
+        real_item_path = os.path.realpath(item_path)
         rel_path = os.path.relpath(item_path, SHARED_DIR)
         
-        if os.path.isdir(item_path):
+        if os.path.isdir(real_item_path):
             folders.append({
                 "name": item,
                 "path": rel_path
             })
         else:
-            stat = os.stat(item_path)
+            stat = os.stat(real_item_path)
             files.append({
                 "name": item,
                 "path": rel_path,
@@ -148,12 +150,14 @@ async def download_file(request: Request, path: str):
         raise HTTPException(status_code=401, detail="Unauthorized")
         
     full_path = get_safe_path(path)
-    if not os.path.isfile(full_path):
+    real_path = os.path.realpath(full_path)
+    
+    if not os.path.isfile(real_path):
         raise HTTPException(status_code=404, detail="File not found")
     
     return FileResponse(
-        path=full_path,
-        filename=os.path.basename(full_path),
+        path=real_path,
+        filename=os.path.basename(real_path),
         media_type='application/octet-stream'
     )
 
