@@ -68,46 +68,51 @@ def start_tunnel(port):
             cmd, 
             stdout=subprocess.PIPE, 
             stderr=subprocess.STDOUT, 
-            bufsize=1, # Re-enable line buffering for instant output
-            universal_newlines=True, # Improved text handling
+            bufsize=1, 
+            universal_newlines=True, 
             shell=True,
             creationflags=0x08000000 if os.name == 'nt' else 0 
         )
         
-        public_url = None
-        start_time = time.time()
-        timeout = 100 
+        # Threaded Output Reader (v1.7.0 - Maximum Reliability)
+        # This solves the "Stuck at Offline" issue by detaching reading from the main wait loop
+        global detected_url
+        detected_url = None
         
-        # Robust Read Loop for EXE
-        while time.time() - start_time < timeout:
-            line = cf_process.stdout.readline()
-            if not line:
-                if cf_process.poll() is not None: break
-                continue
+        def read_loop(proc):
+            global detected_url
+            while True:
+                line = proc.stdout.readline()
+                if not line: break
+                
+                # Debug log
+                try:
+                    with open(get_log_file(), "a", encoding="utf-8") as f:
+                        f.write(f"[CF-OUT] {line}")
+                except: pass
 
-            # Log to debug file
-            try:
-                with open(get_log_file(), "a", encoding="utf-8") as f:
-                    f.write(f"[CF-OUT] {line}")
-            except: pass
+                if "trycloudflare.com" in line and not detected_url:
+                    match = re.search(r'https://[a-zA-Z0-9-]+\.trycloudflare\.com', line)
+                    if match:
+                        detected_url = match.group(0)
+
+        t = threading.Thread(target=read_loop, args=(cf_process,), daemon=True)
+        t.start()
+        
+        start_time = time.time()
+        while time.time() - start_time < 100:
+            if detected_url:
+                log_debug(f"[+] Tunnel link detected: {detected_url}")
+                log_debug("[*] Micro propagation (1s)...")
+                time.sleep(1)
+                
+                with open("url.txt", "w") as f:
+                    f.write(detected_url)
+                return detected_url
             
-            if "trycloudflare.com" in line:
-                match = re.search(r'https://[a-zA-Z0-9-]+\.trycloudflare\.com', line)
-                if match:
-                    public_url = match.group(0)
-                    log_debug(f"[+] Tunnel link detected: {public_url}")
-                    
-                    # 3. Micro-Buffer (v1.6.9)
-                    # 1s is the "blink of an eye" - minimal wait, max speed.
-                    log_debug("[*] Micro propagation (1s)...")
-                    time.sleep(1)
-                    
-                    with open("url.txt", "w") as f:
-                        f.write(public_url)
-                    return public_url
-            
-            if "failed to connect to origin" in line.lower():
-                log_debug("[!] WARNING: Cloudflared can't talk to local server (502 Risk).")
+            if cf_process.poll() is not None:
+                break
+            time.sleep(0.1)
 
     except Exception as e:
         log_debug(f"[-] Fatal error starting tunnel: {e}")
