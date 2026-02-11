@@ -68,27 +68,27 @@ def start_tunnel(port):
             cmd, 
             stdout=subprocess.PIPE, 
             stderr=subprocess.STDOUT, 
-            text=True, 
-            bufsize=1, # Force line buffering (critical for EXE)
+            universal_newlines=True, # Improved text handling
             shell=True,
-            creationflags=0x08000000 if os.name == 'nt' else 0 # CREATE_NO_WINDOW only on Windows
+            creationflags=0x08000000 if os.name == 'nt' else 0 
         )
         
         public_url = None
         start_time = time.time()
         timeout = 100 
         
+        # Robust Read Loop for EXE
         while time.time() - start_time < timeout:
             line = cf_process.stdout.readline()
             if not line:
-                if cf_process.poll() is not None: 
-                    log_debug(f"[-] Tunnel process exited with code {cf_process.returncode}")
-                    break
+                if cf_process.poll() is not None: break
                 continue
-            
-            # Log all output to debug file
-            with open(get_log_file(), "a") as f:
-                f.write(f"[CF-OUT] {line}")
+
+            # Log to debug file
+            try:
+                with open(get_log_file(), "a", encoding="utf-8") as f:
+                    f.write(f"[CF-OUT] {line}")
+            except: pass
             
             if "trycloudflare.com" in line:
                 match = re.search(r'https://[a-zA-Z0-9-]+\.trycloudflare\.com', line)
