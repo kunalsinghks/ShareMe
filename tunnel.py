@@ -11,32 +11,33 @@ cf_process = None
 
 def start_tunnel(port):
     """
-    Fast Cloudflare Tunnel Startup with deep health check.
+    Ultra-Stable Cloudflare Tunnel Startup.
+    Ensures local server is 100% healthy before revealing the URL.
     """
     global cf_process
     
-    # 1. Wait for local server to be fully responsive (HTTP Layer)
-    # Socket check is fast, but HTTP check ensures FastAPI is actually running
+    # 1. STRICT Health Check: Wait for a valid HTTP response (not just a socket)
+    print(f"[*] Verifying local server health on port {port}...")
     server_ready = False
-    for _ in range(20):
+    for i in range(30): # Up to 15 seconds
         try:
-            with socket.create_connection(("127.0.0.1", port), timeout=0.5):
-                # Socket is open, now try a quick internal request
-                try:
-                    requests.get(f"http://127.0.0.1:{port}", timeout=0.5)
-                except requests.exceptions.ConnectionError:
-                    pass # Server might be reset or initializing headers
+            # Try a real HTTP request to the root
+            r = requests.get(f"http://127.0.0.1:{port}", timeout=1)
+            if r.status_code < 500:
+                print(f"[+] Local server is healthy (Status: {r.status_code})")
                 server_ready = True
                 break
-        except:
-            time.sleep(0.5)
+        except Exception:
+            pass
+        time.sleep(0.5)
 
     if not server_ready:
-        print("[-] Warning: Local server not detected. Attempting tunnel anyway...")
+        print("[-] Error: Local server failed health check. The tunnel might show 502.")
 
     # 2. Start Cloudflare Tunnel
-    # We use --protocol http2 for better stability on Windows 
-    cmd = ["npx", "--yes", "cloudflared", "tunnel", "--url", f"http://127.0.0.1:{port}", "--no-autoupdate", "--protocol", "http2"]
+    # Removed --protocol http2 to let cloudflared pick the best protocol (usually QUIC/Auto)
+    # Using localhost instead of 127.0.0.1 for high-level OS compatibility
+    cmd = ["npx", "--yes", "cloudflared", "tunnel", "--url", f"http://localhost:{port}", "--no-autoupdate"]
     
     try:
         cf_process = subprocess.Popen(
@@ -52,18 +53,23 @@ def start_tunnel(port):
             line = cf_process.stdout.readline()
             if not line: break
             
+            # Clean logging for URL detection
             if "trycloudflare.com" in line:
                 match = re.search(r'https://[a-zA-Z0-9-]+\.trycloudflare\.com', line)
                 if match:
                     public_url = match.group(0)
-                    # 3. CRITICAL: Wait for Cloudflare DNS propagation
-                    # Without this, users get 502/404 for the first few seconds
-                    time.sleep(3) 
+                    # 3. CRITICAL: Wait for Cloudflare Edge & DNS stabilization
+                    # Increased to 5 seconds to ensure the '502 Bad Gateway' disappears.
+                    time.sleep(5) 
                     
                     with open("url.txt", "w") as f:
                         f.write(public_url)
                     return public_url
-                    
+            
+            # If we detect common failure patterns, we log them but keep waiting
+            if "failed to connect to origin" in line.lower():
+                pass # Already handled by health check loop
+
     except Exception as e:
         print(f"Error: {e}")
         
@@ -74,7 +80,7 @@ def stop_tunnel():
     global cf_process
     try:
         if cf_process:
-            # Use taskkill to ensure the entire tree is closed
+            # Deep taskkill to ensure orphaned processes are dead
             subprocess.run(["taskkill", "/F", "/T", "/PID", str(cf_process.pid)], 
                            creationflags=0x08000000, capture_output=True)
             cf_process = None

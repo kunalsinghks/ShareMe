@@ -53,25 +53,25 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           iscc ShareME_Setup.iss
-          Move-Item -Path "dist\ShareMe_Windows_Installer_v1.4.2.exe" -Destination . -Force
-          Remove-Item -Path "dist\ShareMe_Windows_Installer_v1.4.2.exe" -Force -ErrorAction SilentlyContinue
+          Move-Item -Path "dist\ShareMe_Windows_Installer_v1.4.3.exe" -Destination . -Force
+          Remove-Item -Path "dist\ShareMe_Windows_Installer_v1.4.3.exe" -Force -ErrorAction SilentlyContinue
         shell: pwsh
 
       - name: Pack Windows Portable
         if: matrix.os == 'windows-latest'
         run: |
-          powershell "Compress-Archive -Path dist/ShareME/* -DestinationPath ShareMe_Windows_Portable_v1.4.2.zip"
+          powershell "Compress-Archive -Path dist/ShareME/* -DestinationPath ShareMe_Windows_Portable_v1.4.3.zip"
         shell: bash
 
       - name: Pack Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
-          tar -czvf ShareMe_Linux_Portable_v1.4.2.tar.gz -C dist/ShareME .
+          tar -czvf ShareMe_Linux_Portable_v1.4.3.tar.gz -C dist/ShareME .
 
       - name: Pack Mac
         if: matrix.os == 'macos-latest'
         run: |
-          zip -r ShareMe_Mac_Portable_v1.4.2.zip dist/ShareME
+          zip -r ShareMe_Mac_Portable_v1.4.3.zip dist/ShareME
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
