@@ -70,7 +70,7 @@ def start_tunnel(port):
             stderr=subprocess.STDOUT, 
             text=True, 
             shell=True,
-            creationflags=0x08000000 # CREATE_NO_WINDOW
+            creationflags=0x08000000 if os.name == 'nt' else 0 # CREATE_NO_WINDOW only on Windows
         )
         
         public_url = None
@@ -118,9 +118,14 @@ def stop_tunnel():
     try:
         log_debug("[*] Stopping tunnel process...")
         if cf_process:
-            # Taskkill to kill the whole tree
-            subprocess.run(["taskkill", "/F", "/T", "/PID", str(cf_process.pid)], 
-                           creationflags=0x08000000, capture_output=True)
+            if os.name == 'nt':
+                # Taskkill to kill the whole tree on Windows
+                subprocess.run(["taskkill", "/F", "/T", "/PID", str(cf_process.pid)], 
+                               creationflags=0x08000000, capture_output=True)
+            else:
+                # Standard kill on Unix
+                import signal
+                os.killpg(os.getpgid(cf_process.pid), signal.SIGTERM)
             cf_process = None
     except Exception as e:
         log_debug(f"[-] Error stopping tunnel: {e}")
