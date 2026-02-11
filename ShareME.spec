@@ -57,7 +57,8 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
     icon=['favicon.ico'],
-    version='version_info.txt'
+    version='version_info.txt',
+)
 coll = COLLECT(
     exe,
     a.binaries,
