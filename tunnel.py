@@ -74,32 +74,29 @@ def start_tunnel(port):
             creationflags=0x08000000 if os.name == 'nt' else 0 
         )
         
-        # Threaded Output Reader (v1.7.0 - Maximum Reliability)
-        # This solves the "Stuck at Offline" issue by detaching reading from the main wait loop
+        # Hybrid Start: Read first few lines synchronously to catch immediate errors/links
+        # Then hand off to thread.
         global detected_url
         detected_url = None
-        
+
         def read_loop(proc):
             global detected_url
             while True:
-                # Binary read to bypass any encoding/text-mode buffering weirdness in EXE
                 line_bin = proc.stdout.readline()
                 if not line_bin: break
-                
                 try:
                     line = line_bin.decode('utf-8', errors='ignore')
                 except: continue
-
-                # Debug log
+                
+                if "trycloudflare.com" in line and not detected_url:
+                    match = re.search(r'https://[a-zA-Z0-9-]+\.trycloudflare\.com', line)
+                    if match: detected_url = match.group(0)
+                        
+                # Log
                 try:
                     with open(get_log_file(), "a", encoding="utf-8") as f:
                         f.write(f"[CF-OUT] {line}")
                 except: pass
-
-                if "trycloudflare.com" in line and not detected_url:
-                    match = re.search(r'https://[a-zA-Z0-9-]+\.trycloudflare\.com', line)
-                    if match:
-                        detected_url = match.group(0)
 
         t = threading.Thread(target=read_loop, args=(cf_process,), daemon=True)
         t.start()
