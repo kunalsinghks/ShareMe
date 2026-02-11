@@ -97,9 +97,10 @@ def start_tunnel(port):
                     public_url = match.group(0)
                     log_debug(f"[+] Tunnel link detected: {public_url}")
                     
-                    # 3. FASTEST STARTUP (v1.6.7) - No waiting, instant link display
-                    log_debug("[*] Connecting instantly...")
-                    # time.sleep(0)
+                    # 3. Minimum Viable Propagation (v1.6.8)
+                    # 3s is the absolute minimum to avoid immediate NXDOMAIN errors.
+                    log_debug("[*] Quick DNS propagation (3s)...")
+                    time.sleep(3)
                     
                     with open("url.txt", "w") as f:
                         f.write(public_url)
