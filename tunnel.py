@@ -97,10 +97,9 @@ def start_tunnel(port):
                     public_url = match.group(0)
                     log_debug(f"[+] Tunnel link detected: {public_url}")
                     
-                    # 3. Enhanced DNS Stabilization (v1.5.8)
-                    # 10s is the required buffer to avoid Error 1033 on Windows http2
-                    log_debug("[*] Stabilizing Tunnel Connection (10s)...")
-                    time.sleep(10)
+                    # 3. FASTEST STARTUP (v1.6.7) - No waiting, instant link display
+                    log_debug("[*] Connecting instantly...")
+                    # time.sleep(0)
                     
                     with open("url.txt", "w") as f:
                         f.write(public_url)
