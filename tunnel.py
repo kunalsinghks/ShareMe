@@ -108,8 +108,8 @@ def start_tunnel(port):
         while time.time() - start_time < 100:
             if detected_url:
                 log_debug(f"[+] Tunnel link detected: {detected_url}")
-                log_debug("[*] Micro propagation (1s)...")
-                time.sleep(1)
+                log_debug("[*] Waiting for DNS propagation (4s)...")
+                time.sleep(4)
                 
                 with open("url.txt", "w") as f:
                     f.write(detected_url)
