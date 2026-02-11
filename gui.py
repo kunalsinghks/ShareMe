@@ -44,7 +44,7 @@ class ShareMEApp(ctk.CTk):
 
         # Window Setup
         # Window Setup
-        self.title("ShareME v1.3.9 | Cloudflare P2P")
+        self.title("ShareME v1.4.0 | Cloudflare P2P")
         self.geometry("1000x800")
         
         # Appearance - LIGHT MODE DEFAULT
@@ -141,7 +141,7 @@ class ShareMEApp(ctk.CTk):
         self.btn_reset.pack(side="right", padx=10)
         
         # Performance Progress Bar
-        self.add_progress = ctk.CTkProgressBar(self.main_view, height=4, corner_radius=0, fg_color="transparent", progress_color=BTN_PURPLE)
+        self.add_progress = ctk.CTkProgressBar(self.main_view, height=4, corner_radius=0, progress_color=BTN_PURPLE)
         self.add_progress.grid(row=2, column=0, sticky="ew", pady=(85, 0))
         self.add_progress.set(0)
 

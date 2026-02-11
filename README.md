@@ -1,4 +1,4 @@
-# ShareME v1.3.9 🚀 
+# ShareME v1.4.0 🚀 
 ### Premium Encrypted P2P File Server — Built by Kunal
 
 <div align="center">
@@ -28,13 +28,13 @@ ShareME creates a temporary, encrypted "bridge" directly to your local computer 
 
 ---
 
-## 📥 Downloads (Official v1.3.9)
+## 📥 Downloads (Official v1.4.0)
 
 | Platform | Recommended | Alternative |
 | :--- | :--- | :--- |
-| **Windows** | [**Get Installer (exe)**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.3.9/ShareMe_Windows_Installer_v1.3.9.exe) | [Portable (zip)](https://github.com/kunalsinghks/ShareMe/releases/download/v1.3.9/ShareMe_Windows_Portable_v1.3.9.zip) |
-| **macOS** | [**Download for Mac**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.3.9/ShareMe_Mac_Portable_v1.3.9.zip) | Universal Binary |
-| **Linux** | [**Download for Linux**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.3.9/ShareMe_Linux_Portable_v1.3.9.tar.gz) | `.tar.gz` |
+| **Windows** | [**Get Installer (exe)**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.4.0/ShareMe_Windows_Installer_v1.4.0.exe) | [Portable (zip)](https://github.com/kunalsinghks/ShareMe/releases/download/v1.4.0/ShareMe_Windows_Portable_v1.4.0.zip) |
+| **macOS** | [**Download for Mac**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.4.0/ShareMe_Mac_Portable_v1.4.0.zip) | Universal Binary |
+| **Linux** | [**Download for Linux**](https://github.com/kunalsinghks/ShareMe/releases/download/v1.4.0/ShareMe_Linux_Portable_v1.4.0.tar.gz) | `.tar.gz` |
 
 ---
 
