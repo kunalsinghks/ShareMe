@@ -1,14 +1,12 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 block_cipher = None
-
 # We need to include static and templates folders
 added_files = [
     ('static', 'static'),
     ('templates', 'templates'),
     ('favicon.ico', '.'),
 ]
-
 a = Analysis(
     ['gui.py'],
     pathex=[],
@@ -42,7 +40,6 @@ a = Analysis(
     noarchive=False,
 )
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
-
 exe = EXE(
     pyz,
     a.scripts,
@@ -60,14 +57,10 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
     icon=['favicon.ico'],
-)
+    version='version_info.txt'
 coll = COLLECT(
     exe,
     a.binaries,
     a.zipfiles,
     a.datas,
-    strip=False,
-    upx=True,
     upx_exclude=[],
-    name='ShareME',
-)
