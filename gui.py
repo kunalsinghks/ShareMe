@@ -256,14 +256,19 @@ class ShareMEApp(ctk.CTk):
         threading.Thread(target=lambda: uvicorn.run("main:app", host="127.0.0.1", port=8000, log_level="error"), daemon=True).start()
         
         def tunnel_watch():
-            curr_url = tunnel.start_cloudflared(self.server_port)
-            if curr_url and self.is_running: 
-                self.public_url = curr_url
-                main.PUBLIC_URL = curr_url
-                self.after(0, lambda: self.update_url_box(curr_url))
-                self.after(0, lambda: self.status_badge.configure(text="● LIVE ONLINE", text_color="#10b981"))
-            else:
-                self.after(0, lambda: self.status_badge.configure(text="● ERROR", text_color="#ef4444"))
+            try:
+                curr_url = tunnel.start_cloudflared(self.server_port)
+                if curr_url and self.is_running: 
+                    self.public_url = curr_url
+                    main.PUBLIC_URL = curr_url
+                    self.after(0, lambda: self.update_url_box(curr_url))
+                    self.after(0, lambda: self.status_badge.configure(text="● LIVE ONLINE", text_color="#10b981"))
+                else:
+                    self.after(0, lambda: self.status_badge.configure(text="● ERROR", text_color="#ef4444"))
+            except Exception as e:
+                with open("gui_error.log", "a") as f:
+                    f.write(f"[GUI-THREAD-FAIL] {e}\n")
+                self.after(0, lambda: self.status_badge.configure(text="● CRASHED", text_color="#ef4444"))
 
         threading.Thread(target=tunnel_watch, daemon=True).start()
 
