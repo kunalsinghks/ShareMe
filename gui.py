@@ -44,7 +44,7 @@ class ShareMEApp(ctk.CTk):
 
         # Window Setup
         # Window Setup
-        self.title("ShareME v1.4.7 | Cloudflare P2P")
+        self.title("ShareME v1.4.8 | Cloudflare P2P")
         self.geometry("1000x800")
         
         # Appearance - LIGHT MODE DEFAULT
@@ -296,7 +296,7 @@ class ShareMEApp(ctk.CTk):
 
     def start_server(self):
         self.is_running = True
-        self.title("ShareME v1.4.7 | Cloudflare P2P")
+        self.title("ShareME v1.4.8 | Cloudflare P2P")
         self.start_btn.configure(text="STOP SHARING", fg_color="#ef4444", hover_color="#dc2626")
         self.status_badge.configure(text="● STARTING...", text_color=BTN_PURPLE)
         threading.Thread(target=lambda: uvicorn.run(main.app, host="0.0.0.0", port=8000, log_level="error"), daemon=True).start()

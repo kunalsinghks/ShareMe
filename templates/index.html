@@ -15,8 +15,13 @@
 <body>
     <div class="container">
         <header>
-            <div class="theme-toggle" id="themeBtn" title="Toggle Light/Dark Theme">
-                <i data-lucide="sun" id="themeIcon"></i>
+            <div style="display: flex; gap: 10px; position: absolute; right: 2rem; top: 2rem;">
+                <div class="theme-toggle" onclick="location.reload()" title="Refresh Page" style="cursor: pointer;">
+                    <i data-lucide="refresh-cw"></i>
+                </div>
+                <div class="theme-toggle" id="themeBtn" title="Toggle Light/Dark Theme">
+                    <i data-lucide="sun" id="themeIcon"></i>
+                </div>
             </div>
             <h1>ShareME</h1>
             <p class="subtitle">Securely sharing files directly from your PC</p>
