@@ -44,7 +44,7 @@ class ShareMEApp(ctk.CTk):
         super().__init__()
 
         # Window Setup
-        self.title("ShareME v1.6.0 | Performance Edition")
+        self.title("ShareME v1.9.0 | Performance Edition")
         self.geometry("1000x800")
         
         # Appearance - LIGHT MODE DEFAULT (As requested)

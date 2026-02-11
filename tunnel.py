@@ -61,8 +61,11 @@ def start_tunnel(port):
     # 2. Optimized cloudflared command
     # Added --connect-timeout and --origin-host-header for better handshake
     # Using 'cloudflared' directly (npx can be unreliable for long-lived pipes)
+    # v1.8.0: Explicitly use npx.cmd on Windows for shell=False compatibility
+    npx_command = "npx.cmd" if os.name == "nt" else "npx"
+    
     cmd = [
-        "npx", "--yes", "cloudflared@latest", "tunnel", 
+        npx_command, "--yes", "cloudflared@latest", "tunnel", 
         "--url", f"http://127.0.0.1:{port}", 
         "--no-autoupdate",
         "--protocol", "http2", # http2 is most stable for avoiding 1033 on Windows
