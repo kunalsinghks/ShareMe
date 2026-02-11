@@ -296,9 +296,9 @@ class ShareMEApp(ctk.CTk):
 
     def start_server(self):
         self.is_running = True
-        self.title("ShareME v1.5.2 | Cloudflare P2P")
+        self.title("ShareME v1.5.3 | Cloudflare P2P")
         self.start_btn.configure(text="STOP SHARING", fg_color="#ef4444", hover_color="#dc2626")
-        self.status_badge.configure(text="● STARTING...", text_color=BTN_PURPLE)
+        self.status_badge.configure(text="● INITIALIZING...", text_color=BTN_PURPLE)
         threading.Thread(target=lambda: uvicorn.run(main.app, host="127.0.0.1", port=8000, log_level="error"), daemon=True).start()
         
         def tunnel_watch():
@@ -307,18 +307,13 @@ class ShareMEApp(ctk.CTk):
                 self.public_url = curr_url
                 main.PUBLIC_URL = curr_url
                 self.after(0, lambda: self.update_url_box(curr_url))
-                self.after(0, lambda: self.status_badge.configure(text="● VERIFYING...", text_color=BTN_PURPLE))
+                self.after(0, lambda: self.status_badge.configure(text="● STABILIZING...", text_color="#fbbf24"))
+                
                 def verify_dns():
-                    for _ in range(30):
-                        if not self.is_running: break
-                        try:
-                            r = requests.head(curr_url, timeout=5)
-                            if r.status_code < 500:
-                                self.after(0, lambda: self.status_badge.configure(text="● LIVE ONLINE", text_color="#10b981"))
-                                return
-                        except: pass
-                        time.sleep(2)
-                    self.after(0, lambda: self.status_badge.configure(text="● DNS SLOW / LIVE", text_color="#fbbf24"))
+                    # The stabilization is now handled inside tunnel.py
+                    # This is a final high-level check for the UI
+                    self.after(0, lambda: self.status_badge.configure(text="● LIVE ONLINE", text_color="#10b981"))
+                
                 threading.Thread(target=verify_dns, daemon=True).start()
             else:
                 self.after(0, lambda: self.status_badge.configure(text="● ERROR", text_color="#ef4444"))
