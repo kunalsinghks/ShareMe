@@ -12,11 +12,19 @@ cf_process = None
 def get_log_file():
     return os.path.join(os.path.abspath("."), "tunnel_debug.log")
 
+import sys
+
 def log_debug(msg):
     timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-    with open(get_log_file(), "a") as f:
-        f.write(f"[{timestamp}] {msg}\n")
-    print(msg)
+    try:
+        with open(get_log_file(), "a") as f:
+            f.write(f"[{timestamp}] {msg}\n")
+    except: pass
+    
+    # Only print to console if NOT frozen (Debug mode)
+    if not getattr(sys, 'frozen', False):
+        try: print(msg)
+        except: pass
 
 def start_tunnel(port):
     """
