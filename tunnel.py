@@ -11,17 +11,17 @@ cf_process = None
 
 def start_tunnel(port):
     """
-    Ultra-Stable Cloudflare Tunnel Startup (v1.4.5).
-    Focuses on IPv4 connectivity and explicit origin resolution.
+    Highly Resilient Tunnel Startup (v1.4.6).
+    Uses 127.0.0.1 for origin to bypass 'localhost' resolution bugs.
     """
     global cf_process
     
-    # 1. Wait for local server to be fully responsive (IPv4)
-    print(f"[*] Verifying local server on 127.0.0.1:{port}...")
+    # 1. Broad Server Search: Try to reach the server on loopback
+    print(f"[*] Probing local server on port {port}...")
     server_ready = False
-    for i in range(20):
+    for _ in range(30): # 15 seconds max wait
         try:
-            # Using 127.0.0.1 explicitly to avoid IPv6 [::1] conflicts
+            # We check 127.0.0.1 regardless of binding (0.0.0.0 includes 127.0.0.1)
             r = requests.get(f"http://127.0.0.1:{port}", timeout=1)
             if r.status_code < 500:
                 server_ready = True
@@ -31,16 +31,16 @@ def start_tunnel(port):
         time.sleep(0.5)
 
     if not server_ready:
-        print("[-] Warning: Local server not responding on 127.0.0.1. Tunnel may fail.")
+        print("[-] Warning: Local server health check failed. Attempting tunnel anyway...")
 
-    # 2. Start Cloudflare Tunnel
-    # Protocol 'http2' is significantly more stable on Windows than default 'quic'
-    # Using 127.0.0.1 instead of localhost to prevent IPv6 mismatch (::1 vs 127.0.0.1)
+    # 2. Optimized cloudflared command
+    # Added --http-host-header to ensure the server sees the correct host if it cares
+    # sticking to 127.0.0.1 as it's the most reliable origin address
     cmd = [
         "npx", "--yes", "cloudflared", "tunnel", 
         "--url", f"http://127.0.0.1:{port}", 
-        "--no-autoupdate", 
-        "--protocol", "http2"
+        "--no-autoupdate",
+        "--http-host-header", "127.0.0.1"
     ]
     
     try:
@@ -61,17 +61,15 @@ def start_tunnel(port):
                 match = re.search(r'https://[a-zA-Z0-9-]+\.trycloudflare\.com', line)
                 if match:
                     public_url = match.group(0)
-                    # 3. DNS/Edge Propagation Buffer
-                    # 5 seconds is the sweet spot for trial tunnels to stabilize
-                    time.sleep(5) 
-                    
+                    # 3. DNS Buffer: Allow more time for initial handshake
+                    time.sleep(6) 
                     with open("url.txt", "w") as f:
                         f.write(public_url)
                     return public_url
             
+            # Real-time connectivity debug
             if "failed to connect to origin" in line.lower():
-                # If we see this, we might need to retry or log it
-                pass
+                print("[!] Tunnel connected but server handshake failed. Retrying origin...")
 
     except Exception as e:
         print(f"Error: {e}")
@@ -79,11 +77,10 @@ def start_tunnel(port):
     return None
 
 def stop_tunnel():
-    """Cleanup Cloudflare process tree."""
+    """Silent process termination."""
     global cf_process
     try:
         if cf_process:
-            # Use taskkill to kill the npx wrapper and the cloudflared process itself
             subprocess.run(["taskkill", "/F", "/T", "/PID", str(cf_process.pid)], 
                            creationflags=0x08000000, capture_output=True)
             cf_process = None
