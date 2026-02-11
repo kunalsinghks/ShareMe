@@ -4,214 +4,343 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShareME | Secure P2P File Sharing & Direct Transfer Tool</title>
     <meta name="description"
-        content="ShareMe - Premium P2P File Sharing. Open-source direct file transfer powered by Cloudflare Tunnels. Secure, encrypted, and no size limits.">
+        content="ShareMe is a premium, open-source P2P file sharing tool powered by Cloudflare Tunnels. Transfer large files directly from your PC to anyone, anywhere, without cloud limits. Secure, encrypted, and fast.">
     <meta name="keywords"
-        content="P2P File Sharing, Direct File Transfer, Open Source, Send Large Files, ShareMe, Secure File Transfer, Cloudflare Tunnel Sharing">
+        content="P2P File Sharing, Direct File Transfer, Open Source, Send Large Files, ShareMe, Secure File Transfer, Cloudflare Tunnel Sharing, Encrypted File Sharing, No Size Limit, Fast File Transfer">
     <meta name="author" content="Kunal">
-    <title>ShareME | Premium Open Source P2P Sharing</title>
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="ShareME | Secure P2P File Sharing">
+    <meta property="og:description"
+        content="Directly share files from your PC. No cloud uploads. No size limits. 100% Free & Open Source.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kunalsinghks.github.io/ShareMe/">
+    <meta property="og:image" content="https://kunalsinghks.github.io/ShareMe/favicon.ico">
+    <link rel="canonical" href="https://kunalsinghks.github.io/ShareMe/">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "ShareME",
+      "operatingSystem": "Windows, macOS, Linux",
+      "applicationCategory": "UtilitiesApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Secure P2P file sharing tool powered by Cloudflare Tunnels.",
+      "author": {
+          "@type": "Person",
+          "name": "Kunal"
+      }
+    }
+    </script>
     <style>
         :root {
             --primary: #6366f1;
             --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
             --bg: #f8fafc;
             --text: #0f172a;
+            --text-light: #64748b;
             --glass: rgba(255, 255, 255, 0.7);
+            --card-border: rgba(255, 255, 255, 0.5);
         }
 
         body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--bg);
-            background-image: radial-gradient(circle at top right, #eef2ff, transparent), radial-gradient(circle at bottom left, #f5f3ff, transparent);
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 40%);
             color: var(--text);
             margin: 0;
             overflow-x: hidden;
             scroll-behavior: smooth;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 4rem 2rem;
-            text-align: center;
+            padding: 2rem;
         }
 
+        /* Navigation */
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 2rem 0;
+            padding: 1.5rem 0;
+            margin-bottom: 4rem;
         }
 
         .nav-logo {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 800;
-            color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
         }
 
         .nav-links a {
             text-decoration: none;
-            color: #64748b;
+            color: var(--text-light);
             font-weight: 600;
-            margin-left: 2rem;
             transition: color 0.3s;
+            font-size: 1rem;
         }
 
         .nav-links a:hover {
             color: var(--primary);
         }
 
+        /* Hero Section */
         .hero {
-            padding: 4rem 0 6rem;
+            text-align: center;
+            padding: 4rem 0 8rem;
+            position: relative;
         }
 
         h1 {
-            font-size: 6rem;
-            margin: 0;
+            font-size: clamp(3.5rem, 8vw, 6rem);
+            margin: 0 0 1.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #6366f1, #a855f7);
+            line-height: 1.1;
+            background: linear-gradient(135deg, #1e293b, #475569);
             -webkit-background-clip: text;
-            background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -3px;
+            letter-spacing: -2px;
+        }
+
+        h1 span {
+            background: linear-gradient(135deg, var(--primary), #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .subtitle {
-            font-size: 1.6rem;
-            color: #64748b;
-            margin: 0.5rem 0 4rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
+            font-size: 1.35rem;
+            color: var(--text-light);
+            max-width: 750px;
+            margin: 0 auto 4rem;
+            font-weight: 300;
         }
 
-        .download-box {
+        /* Download Section */
+        .download-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2.5rem;
-            margin: 2rem 0;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
         }
 
         .platform-card {
             background: var(--glass);
-            padding: 3rem;
-            border-radius: 3rem;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 2.5rem;
+            border-radius: 2rem;
+            border: 1px solid var(--card-border);
             text-align: left;
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
         .platform-card:hover {
-            transform: translateY(-12px);
-            background: white;
-            box-shadow: 0 40px 80px -20px rgba(99, 102, 241, 0.2);
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 20px 40px -12px rgba(99, 102, 241, 0.25);
+            border-color: var(--primary-light);
         }
 
         .badge {
             position: absolute;
-            top: 20px;
-            right: -30px;
+            top: 25px;
+            right: -35px;
             background: #10b981;
             color: white;
-            padding: 5px 40px;
+            padding: 8px 40px;
             font-size: 0.75rem;
             font-weight: 800;
             transform: rotate(45deg);
+            z-index: 10;
         }
 
-        .platform-title {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 2.5rem;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        .platform-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
         }
 
-        .btn-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        .platform-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text);
         }
 
         .btn {
-            padding: 1.2rem 1.5rem;
-            border-radius: 1.3rem;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 1.05rem;
-            transition: all 0.3s ease;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 1rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            box-sizing: border-box;
         }
 
         .btn-primary {
             background: var(--primary);
             color: white;
-            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
         }
 
         .btn-secondary {
-            background: #EEF2FF;
+            background: #eef2ff;
             color: var(--primary);
         }
 
-        .btn:hover {
-            transform: scale(1.04);
-            filter: brightness(1.1);
+        .btn-secondary:hover {
+            background: #e0e7ff;
+        }
+
+        .version-tag {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 5rem;
         }
 
         .section-title {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 800;
-            margin: 8rem 0 4rem;
+            margin-bottom: 1rem;
+            color: var(--text);
         }
 
-        .grid-3 {
+        .section-subtitle {
+            color: var(--text-light);
+            font-size: 1.2rem;
+        }
+
+        .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 3rem;
-            text-align: left;
+            gap: 2.5rem;
         }
 
-        .info-card {
-            background: rgba(255, 255, 255, 0.4);
-            padding: 3rem;
-            border-radius: 2.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: glass 0.3s;
-        }
-
-        .info-card:hover {
+        .feature-card {
             background: white;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            border: 1px solid #f1f5f9;
+            transition: all 0.3s;
         }
 
-        .info-card h3 {
-            margin: 0 0 1.2rem;
-            font-size: 1.6rem;
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
+            border-color: var(--primary-light);
         }
 
-        .info-card p {
-            color: #64748b;
-            line-height: 1.7;
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: #eef2ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+            margin: 0;
+        }
+
+        /* How It Works */
+        .steps {
+            padding: 6rem 0;
+            background: linear-gradient(to bottom, transparent, #fff, transparent);
+        }
+
+        .step {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .step-number {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1;
+            color: #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            font-size: 1.5rem;
+            margin: 0 0 0.5rem;
+            color: var(--text);
+        }
+
+        .step-content p {
+            color: var(--text-light);
             font-size: 1.1rem;
+            margin: 0;
         }
 
+        /* Footer */
         footer {
-            margin-top: 10rem;
-            padding: 5rem 2rem;
+            margin-top: 6rem;
+            padding: 4rem 0;
             border-top: 1px solid #e2e8f0;
-            color: #94a3b8;
-            font-weight: 600;
-            font-size: 1.1rem;
+            text-align: center;
+            color: var(--text-light);
         }
 
         .heart {
@@ -228,7 +357,17 @@
             }
 
             50% {
-                transform: scale(1.3);
+                transform: scale(1.2);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+
+            .nav-links {
+                display: none;
             }
         }
     </style>
@@ -239,80 +378,135 @@
         <nav>
             <div class="nav-logo">ShareME.</div>
             <div class="nav-links">
-                <a href="#how">How it Works</a>
-                <a href="#oss">Open Source</a>
-                <a href="https://github.com/kunalsinghks/ShareMe">GitHub</a>
+                <a href="#download">Download</a>
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How it Works</a>
+                <a href="https://github.com/kunalsinghks/ShareMe" target="_blank">GitHub</a>
             </div>
         </nav>
 
         <section class="hero">
-            <h1>ShareME v1.6.2</h1>
-            <p class="subtitle">Experience high-speed, direct P2P sharing. Encrypted tunnels from your hardware to their
-                screen.</p>
+            <h1>Peer-to-Peer.<br><span>Simplified.</span></h1>
+            <p class="subtitle">Securely share files directly from your device to anywhere in the world. No cloud
+                uploads. No size limits. Powered by encrypted tunnels.</p>
 
-            <div class="download-box">
+            <div id="download" class="download-grid">
                 <!-- Windows -->
                 <div class="platform-card">
-                    <div class="badge">RECOMMENDED</div>
-                    <div class="platform-title">🪟 Windows</div>
-                    <div class="btn-stack">
-                        <a href="https://github.com/kunalsinghks/ShareMe/releases/download/v1.6.2/ShareMe_Windows_Installer_v1.6.2.exe"
-                            class="btn btn-primary">
-                            <span>Get Installer (exe)</span>
-                        </a>
-                        <a href="https://github.com/kunalsinghks/ShareMe/releases/download/v1.6.2/ShareMe_Windows_Portable_v1.6.2.zip"
-                            class="btn btn-secondary">
-                            <span>Portable Version (zip)</span>
-                        </a>
-                    </div>
+                    <div class="badge">LATEST v1.6.0</div>
+                    <span class="platform-icon">🪟</span>
+                    <div class="platform-name">Windows</div>
+                    <a href="https://github.com/kunalsinghks/ShareMe/releases/download/v1.6.0/ShareMe_Windows_Installer_v1.6.0.exe"
+                        class="btn btn-primary">Download Installer (.exe)</a>
+                    <a href="https://github.com/kunalsinghks/ShareMe/releases/download/v1.6.0/ShareMe_Windows_Portable_v1.6.0.zip"
+                        class="btn btn-secondary">Portable Version (.zip)</a>
+                    <div class="version-tag">Windows 10/11 • 64-bit</div>
                 </div>
 
                 <!-- macOS -->
                 <div class="platform-card">
-                    <div class="platform-title">🍎 macOS</div>
-                    <div class="btn-stack">
-                        <a href="https://github.com/kunalsinghks/ShareMe/releases/download/v1.6.2/ShareMe_Mac_Portable_v1.6.2.zip"
-                            class="btn btn-primary">
-                            <span>Download for Mac</span>
-                        </a>
-                        <p style="font-size: 0.85rem; color: #64748b; margin-top: 10px;">Universal / Apple Silicon
-                            Support</p>
-                    </div>
+                    <span class="platform-icon">🍎</span>
+                    <div class="platform-name">macOS</div>
+                    <a href="https://github.com/kunalsinghks/ShareMe/releases/download/v1.6.0/ShareMe_Mac_Portable_v1.6.0.zip"
+                        class="btn btn-primary">Download for Mac</a>
+                    <div class="version-tag">Apple Silicon & Intel • Universal</div>
                 </div>
 
                 <!-- Linux -->
                 <div class="platform-card">
-                    <div class="platform-title">🐧 Linux</div>
-                    <div class="btn-stack">
-                        <a href="https://github.com/kunalsinghks/ShareMe/releases/download/v1.6.2/ShareMe_Linux_Portable_v1.6.2.tar.gz"
-                            class="btn btn-primary">
-                            <span>Download for Linux</span>
-                        </a>
-                    </div>
+                    <span class="platform-icon">🐧</span>
+                    <div class="platform-name">Linux</div>
+                    <a href="https://github.com/kunalsinghks/ShareMe/releases/download/v1.6.0/ShareMe_Linux_Portable_v1.6.0.tar.gz"
+                        class="btn btn-primary">Download for Linux</a>
+                    <div class="version-tag">Ubuntu/Debian • Tarball</div>
                 </div>
             </div>
         </section>
 
-        <h2 id="how" class="section-title">Technically Superior Sharing</h2>
-        <div class="grid-3">
-            <div class="info-card">
-                <h3>Direct Tunneling</h3>
-                <p>ShareME uses Cloudflare Argo to punch through CGNAT and firewalls, creating a secure pipe without
-                    complex port settings.</p>
+        <section id="features" class="features">
+            <div class="section-header">
+                <h2 class="section-title">Why ShareME?</h2>
+                <p class="section-subtitle">Built for privacy, designed for speed.</p>
             </div>
-            <div class="info-card">
-                <h3>Zero Cache Policy</h3>
-                <p>Your files are never uploaded to a cloud. They stream directly from your PC memory to the recipient.
-                </p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Encrypted Tunnels</h3>
+                    <p>ShareME creates a secure Cloudflare Argo tunnel. Your traffic is encrypted end-to-end, bypassing
+                        insecure open ports.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Zero Cloud Storage</h3>
+                    <p>Files stream directly from your disk. We don't store your data, significantly increasing privacy
+                        and speeds.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⛓️</div>
+                    <h3>Bypass CGNAT</h3>
+                    <p>Works behind restricted networks, hotel Wi-Fi, and mobile hotspots. No router configuration or
+                        port forwarding needed.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Military-Grade Speed</h3>
+                    <p>Uses HTTP/2 multiplexing for stable, high-speed transfers even on unstable connections.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📂</div>
+                    <h3>No Size Limits</h3>
+                    <p>Share 100GB+ files or entire folders effortlessly. If you have the disk space, you can share it.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Ready</h3>
+                    <p>Generates instant QR codes. Scan with any phone to access files immediately without installing an
+                        app.</p>
+                </div>
             </div>
-            <div class="info-card">
-                <h3>Built-in QR Engine</h3>
-                <p>Instantly generate encrypted links and QR codes for ultra-fast mobile device discovery.</p>
+        </section>
+
+        <section id="how-it-works" class="steps">
+            <div class="section-header">
+                <h2 class="section-title">How it Works</h2>
             </div>
-        </div>
+
+            <div class="step">
+                <div class="step-number">01</div>
+                <div class="step-content">
+                    <h3>Select Files</h3>
+                    <p>Drag and drop files or folders into the ShareME interface. They remain on your device.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">02</div>
+                <div class="step-content">
+                    <h3>Start Sharing</h3>
+                    <p>Click "Start Sharing". ShareME initializes a secure, temporary public URL (e.g.,
+                        https://random-name.trycloudflare.com).</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">03</div>
+                <div class="step-content">
+                    <h3>Share Link</h3>
+                    <p>Send the link or show the QR code to anyone. They can view and download files directly from their
+                        browser.</p>
+                </div>
+            </div>
+        </section>
 
         <footer>
-            Made with <span class="heart">❤️</span> by Kunal
+            <p>ShareME is free and open-source software.</p>
+            <p>Made with <span class="heart">❤️</span> by Kunal</p>
+            <div style="margin-top: 1rem;">
+                <a href="https://github.com/kunalsinghks/ShareMe"
+                    style="color: var(--primary); text-decoration: none; font-weight: bold;">View on GitHub</a>
+            </div>
         </footer>
     </div>
 </body>
