@@ -69,6 +69,7 @@ def start_tunnel(port):
             stdout=subprocess.PIPE, 
             stderr=subprocess.STDOUT, 
             text=True, 
+            bufsize=1, # Force line buffering (critical for EXE)
             shell=True,
             creationflags=0x08000000 if os.name == 'nt' else 0 # CREATE_NO_WINDOW only on Windows
         )

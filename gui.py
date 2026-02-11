@@ -251,8 +251,9 @@ class ShareMEApp(ctk.CTk):
         self.start_btn.configure(text="STOP SHARING", fg_color="#ef4444", hover_color="#dc2626")
         self.status_badge.configure(text="● INITIALIZING...", text_color=BTN_PURPLE)
         
-        # Async Backend Startup
-        threading.Thread(target=lambda: uvicorn.run("main:app", host="0.0.0.0", port=8000, log_level="error"), daemon=True).start()
+        # Start Backend Server
+        # BIND TO 127.0.0.1 IS CRITICAL FOR EXE (Avoids Firewall 502s)
+        threading.Thread(target=lambda: uvicorn.run("main:app", host="127.0.0.1", port=8000, log_level="error"), daemon=True).start()
         
         def tunnel_watch():
             curr_url = tunnel.start_cloudflared(self.server_port)
